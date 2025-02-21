@@ -32,14 +32,14 @@ export function AuthForm({ mode }: AuthFormProps) {
             : "Create a new account"}
         </CardDescription>
       </CardHeader>
-      <CardContent className="pb-12 px-10">
+      <CardContent className="pb-16 px-6 sm:px-10">
         <Form {...form}>
-          <form onSubmit={onSubmit} className="flex flex-col space-y-6">
-            <div className="space-y-10">
+          <form onSubmit={onSubmit} className="flex flex-col">
+            <div className="space-y-8 mb-24">
               <AuthFormFields mode={mode} form={form} isLoading={isLoading} />
             </div>
 
-            <div className="space-y-6">
+            <div className="pt-6 space-y-10">
               <Button
                 type="submit"
                 className="w-full gap-2 h-12 text-base"
@@ -54,7 +54,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                   : "Sign Up"}
               </Button>
 
-              <div className="relative">
+              <div className="relative py-4">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>

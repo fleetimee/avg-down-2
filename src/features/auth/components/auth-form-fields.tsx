@@ -18,13 +18,13 @@ interface AuthFormFieldsProps {
 
 export function AuthFormFields({ mode, form, isLoading }: AuthFormFieldsProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {mode === "signup" && (
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-3">
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input
@@ -46,7 +46,7 @@ export function AuthFormFields({ mode, form, isLoading }: AuthFormFieldsProps) {
         control={form.control}
         name="email"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="space-y-3">
             <FormLabel>Email</FormLabel>
             <FormControl>
               <Input
@@ -67,7 +67,7 @@ export function AuthFormFields({ mode, form, isLoading }: AuthFormFieldsProps) {
         control={form.control}
         name="password"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="space-y-3">
             <FormLabel>Password</FormLabel>
             <FormControl>
               <Input
