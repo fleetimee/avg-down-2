@@ -13,9 +13,30 @@ export function GithubButton() {
   const handleGithubSignIn = async () => {
     try {
       setIsLoading(true);
-      await authClient.signIn.social({
-        provider: "github",
-      });
+      await authClient.signIn.social(
+        {
+          provider: "github",
+        },
+        {
+          onSuccess: () => {
+            setIsLoading(false);
+
+            toast({
+              title: "Success",
+              description: "Signed in with GitHub successfully.",
+            });
+          },
+          onError: (error) => {
+            console.error("GitHub sign in error:", error);
+            toast({
+              title: "Error",
+              description: error.error.message,
+              variant: "destructive",
+            });
+            setIsLoading(false);
+          },
+        }
+      );
     } catch (error) {
       console.error("GitHub sign in failed:", error);
       toast({

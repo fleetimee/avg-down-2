@@ -41,7 +41,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             </div>
 
             <div className="pt-6 space-y-10">
-              <div className="space-y-3">
+              <div className="space-y-6">
                 <Button
                   type="submit"
                   className="w-full gap-2 h-12 text-base"
