@@ -12,6 +12,7 @@ import { Form } from "@/components/ui/form";
 import { useAuthForm } from "../hooks/use-auth-form";
 import { AuthFormFields } from "./auth-form-fields";
 import { GithubButton } from "./github-button";
+import { Separator } from "@/components/ui/separator";
 
 interface AuthFormProps {
   mode: "signin" | "signup";
@@ -40,34 +41,29 @@ export function AuthForm({ mode }: AuthFormProps) {
             </div>
 
             <div className="pt-6 space-y-10">
-              <Button
-                type="submit"
-                className="w-full gap-2 h-12 text-base"
-                disabled={isLoading}
-                variant={"neutral"}
-              >
-                {isLoading && <Loader2 className="h-5 w-5 animate-spin" />}
-                {isLoading
-                  ? "Processing..."
-                  : mode === "signin"
-                  ? "Sign In"
-                  : "Sign Up"}
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  type="submit"
+                  className="w-full gap-2 h-12 text-base"
+                  disabled={isLoading}
+                  variant={"neutral"}
+                >
+                  {isLoading && <Loader2 className="h-5 w-5 animate-spin" />}
+                  {isLoading
+                    ? "Processing..."
+                    : mode === "signin"
+                    ? "Sign In"
+                    : "Sign Up"}
+                </Button>
 
-              <div className="relative py-4">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
-                  </span>
-                </div>
+                <Separator className="my-4" />
+
+                <GithubButton />
               </div>
 
-              <GithubButton />
+              <br />
 
-              <div className="text-center text-sm">
+              <div className="text-center text-sm pt-8">
                 {mode === "signin" ? (
                   <p>
                     Don&apos;t have an account?{" "}
