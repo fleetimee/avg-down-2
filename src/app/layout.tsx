@@ -28,8 +28,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${dmMono.variable} antialiased`}>
         {children}
+        <Toaster />
       </body>
-      <Toaster />
     </html>
   );
 }
