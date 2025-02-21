@@ -18,7 +18,7 @@ interface AuthFormFieldsProps {
 
 export function AuthFormFields({ mode, form, isLoading }: AuthFormFieldsProps) {
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {mode === "signup" && (
         <FormField
           control={form.control}
@@ -42,8 +42,6 @@ export function AuthFormFields({ mode, form, isLoading }: AuthFormFieldsProps) {
         />
       )}
 
-      <br />
-
       <FormField
         control={form.control}
         name="email"
@@ -64,8 +62,6 @@ export function AuthFormFields({ mode, form, isLoading }: AuthFormFieldsProps) {
           </FormItem>
         )}
       />
-
-      <br />
 
       <FormField
         control={form.control}

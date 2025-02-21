@@ -11,6 +11,7 @@ import {
 import { Form } from "@/components/ui/form";
 import { useAuthForm } from "../hooks/use-auth-form";
 import { AuthFormFields } from "./auth-form-fields";
+import { GithubButton } from "./github-button";
 
 interface AuthFormProps {
   mode: "signin" | "signup";
@@ -20,7 +21,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const { form, isLoading, onSubmit } = useAuthForm({ mode });
 
   return (
-    <Card className="w-full">
+    <Card className="w-full backdrop-blur-none bg-white/70 border-0 shadow-none">
       <CardHeader className="space-y-2">
         <CardTitle className="text-2xl font-bold text-center">
           {mode === "signin" ? "Sign In" : "Sign Up"}
@@ -33,12 +34,12 @@ export function AuthForm({ mode }: AuthFormProps) {
       </CardHeader>
       <CardContent className="pb-12 px-10">
         <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-10">
-            <AuthFormFields mode={mode} form={form} isLoading={isLoading} />
+          <form onSubmit={onSubmit} className="flex flex-col space-y-6">
+            <div className="space-y-10">
+              <AuthFormFields mode={mode} form={form} isLoading={isLoading} />
+            </div>
 
-            <br />
-
-            <div className="pt-8">
+            <div className="space-y-6">
               <Button
                 type="submit"
                 className="w-full gap-2 h-12 text-base"
@@ -52,32 +53,43 @@ export function AuthForm({ mode }: AuthFormProps) {
                   ? "Sign In"
                   : "Sign Up"}
               </Button>
-            </div>
 
-            <br />
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
 
-            <div className="text-center text-sm pt-32">
-              {mode === "signin" ? (
-                <p>
-                  Don&apos;t have an account?{" "}
-                  <Link
-                    href="/sign-up"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Sign Up
-                  </Link>
-                </p>
-              ) : (
-                <p>
-                  Already have an account?{" "}
-                  <Link
-                    href="/sign-in"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Sign In
-                  </Link>
-                </p>
-              )}
+              <GithubButton />
+
+              <div className="text-center text-sm">
+                {mode === "signin" ? (
+                  <p>
+                    Don&apos;t have an account?{" "}
+                    <Link
+                      href="/sign-up"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Sign Up
+                    </Link>
+                  </p>
+                ) : (
+                  <p>
+                    Already have an account?{" "}
+                    <Link
+                      href="/sign-in"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Sign In
+                    </Link>
+                  </p>
+                )}
+              </div>
             </div>
           </form>
         </Form>
