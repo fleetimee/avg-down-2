@@ -5,16 +5,30 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(price);
+export function toJakartaTime(utcDate: Date | string) {
+  const date = new Date(utcDate);
+  // Add 7 hours to convert UTC to Jakarta time (UTC+7)
+  return new Date(date.getTime() + (7 * 60 * 60 * 1000));
 }
 
-export function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("en-US", {
+export function formatJakartaTime(
+  date: Date | string,
+  options?: Intl.DateTimeFormatOptions
+) {
+  const dateObj = toJakartaTime(date);
+  return new Intl.DateTimeFormat("id-ID", {
+    timeZone: "Asia/Jakarta",
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(new Date(date));
+    ...options,
+  }).format(dateObj);
+}
+
+export function formatPrice(price: number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
 }

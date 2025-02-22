@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CoinPriceDisplay } from "./CoinPriceDisplay";
 import { EnrichedBucket } from "../types/coingecko.types";
 import { AddTransactionButton } from "./AddTransactionButton";
+import { formatJakartaTime } from "@/lib/utils";
 
 interface BucketCardProps {
   bucket: EnrichedBucket;
@@ -21,9 +22,14 @@ export function BucketCard({ bucket }: BucketCardProps) {
               height={32}
             />
           )}
-          <CardTitle>
-            {bucket.coinDetails?.name || bucket.bucket.coin_symbol}
-          </CardTitle>
+          <div className="flex flex-col">
+            <CardTitle>
+              {bucket.coinDetails?.name || bucket.bucket.coin_symbol}
+            </CardTitle>
+            <span className="text-xs text-muted-foreground">
+              Created {formatJakartaTime(bucket.bucket.created_at)}
+            </span>
+          </div>
         </div>
       </CardHeader>
       <CardContent>

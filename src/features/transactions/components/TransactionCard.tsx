@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Transaction } from "../types/transaction.types";
-import { formatDate, formatPrice } from "@/lib/utils";
+import { formatPrice, formatJakartaTime } from "@/lib/utils";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -13,7 +13,7 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
         <div className="flex justify-between items-center">
           <span className="font-semibold">{transaction.coin_symbol}</span>
           <span className="text-sm">
-            {formatDate(transaction.transaction_date)}
+            {formatJakartaTime(transaction.transaction_date)}
           </span>
         </div>
         <div className="flex items-center justify-between">

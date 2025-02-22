@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Transaction } from "../types/transaction.types";
-import { formatDate, formatPrice } from "@/lib/utils";
+import { formatPrice, formatJakartaTime } from "@/lib/utils";
 import { Coins } from "lucide-react";
 import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
 
@@ -12,18 +12,13 @@ export function TransactionList({ transactions }: TransactionListProps) {
   return (
     <div className="flex flex-col gap-4">
       {transactions.map((transaction) => (
-        <Alert
-          key={transaction.id}
-          className="flex gap-4 bg-main border-2 border-border"
-        >
+        <Alert key={transaction.id} className="flex gap-4 bg-main border-2 border-border">
           <Coins className="h-5 w-5 mt-[2px]" />
           <div className="flex-1">
             <AlertTitle className="flex items-center justify-between">
-              <span>
-                {transaction.coinDetails?.name || transaction.coin_symbol}
-              </span>
+              <span>{transaction.coinDetails?.name || transaction.coin_symbol}</span>
               <span className="text-sm font-normal">
-                {formatDate(transaction.transaction_date)}
+                {formatJakartaTime(transaction.transaction_date)}
               </span>
             </AlertTitle>
             <AlertDescription className="mt-2 flex flex-col gap-2">
