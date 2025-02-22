@@ -18,6 +18,8 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
+import { EmptyBucketCard } from "@/features/buckets/components/EmptyBucketCard";
+import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTransactionCard";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -87,7 +89,11 @@ export default async function Home() {
         </div>
         <AddBucketButton />
       </div>
-      {enrichedBucket && <BucketCard bucket={enrichedBucket} />}
+      {enrichedBucket ? (
+        <BucketCard bucket={enrichedBucket} />
+      ) : (
+        <EmptyBucketCard />
+      )}
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -98,7 +104,7 @@ export default async function Home() {
       {recentTransactions.length > 0 ? (
         <TransactionList transactions={enrichedTransactions} />
       ) : (
-        <p className="text-sm text-muted-foreground">No transactions yet</p>
+        <EmptyTransactionCard />
       )}
     </div>
   );

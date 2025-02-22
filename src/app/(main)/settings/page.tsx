@@ -1,8 +1,9 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../../../auth";
-import { Settings } from "lucide-react";
+import { Settings, LogOut } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { LogoutButton } from "@/features/auth/components/logout-button";
 
 export default async function SettingsPage() {
   const session = await auth.api.getSession({
@@ -25,6 +26,15 @@ export default async function SettingsPage() {
         <AlertTitle>App Settings</AlertTitle>
         <AlertDescription>
           Settings configuration coming soon...
+        </AlertDescription>
+      </Alert>
+
+      <Alert variant="destructive">
+        <LogOut className="h-4 w-4" />
+        <AlertTitle>Account</AlertTitle>
+        <AlertDescription className="flex justify-between items-center">
+          <span>Sign out from your account</span>
+          <LogoutButton />
         </AlertDescription>
       </Alert>
     </div>
