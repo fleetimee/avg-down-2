@@ -20,20 +20,24 @@ export function TransactionList({ transactions }: TransactionListProps) {
                 {formatDate(transaction.transaction_date)}
               </span>
             </AlertTitle>
-            <AlertDescription className="mt-2">
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <span className="text-muted-foreground">Quantity:</span>
-                <span className="text-right">{transaction.quantity}</span>
+            <AlertDescription className="mt-2 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Quantity:</span>
+                <span className="text-sm">{transaction.quantity}</span>
+              </div>
 
-                <span className="text-muted-foreground">Price per coin:</span>
-                <span className="text-right">
-                  {formatPrice(transaction.price_per_coin)}
-                </span>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Price per coin:</span>
+                <span className="text-sm">{formatPrice(transaction.price_per_coin)}</span>
+              </div>
 
-                <span className="text-muted-foreground">Total cost:</span>
-                <span className="text-right font-medium">
-                  {formatPrice(transaction.total_cost)}
-                </span>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Total cost:</span>
+                <span className="text-sm font-medium">{formatPrice(transaction.total_cost)}</span>
+              </div>
+
+              <div className="mt-1 pt-2 border-t border-border">
+                <span className="text-xs font-mono text-muted-foreground">{transaction.id}</span>
               </div>
             </AlertDescription>
           </div>
