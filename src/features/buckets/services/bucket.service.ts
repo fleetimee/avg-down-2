@@ -70,3 +70,29 @@ export async function getAllUserBuckets(
 
   return enrichedBuckets;
 }
+
+export async function createBucket(
+  userId: string,
+  coin_symbol: string
+): Promise<EnrichedBucket> {
+  // Insert new bucket with initial values
+  const result = await db.query<Bucket>(
+    `INSERT INTO buckets (
+      user_id,
+      coin_symbol,
+      total_quantity,
+      total_cost,
+      average_price
+    ) VALUES ($1, $2, 0, 0, 0)
+    RETURNING *`,
+    [userId, coin_symbol.toLowerCase()]
+  );
+
+  const bucket = result.rows[0];
+  const coinDetails = await getCoinDetails(bucket.coin_symbol);
+
+  return {
+    bucket,
+    coinDetails,
+  };
+}
