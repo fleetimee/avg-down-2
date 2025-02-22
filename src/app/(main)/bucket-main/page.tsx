@@ -53,13 +53,13 @@ export default async function BucketMain() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex flex-col gap-4">
         {buckets.length > 0 ? (
           buckets.map((bucket) => (
             <BucketCard key={bucket.bucket.id} bucket={bucket} />
           ))
         ) : (
-          <p className="text-sm text-muted-foreground col-span-full">
+          <p className="text-sm text-muted-foreground">
             No buckets created yet. Start by adding your first investment
             bucket!
           </p>

@@ -14,7 +14,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
   const currentValue = bucket.bucket.total_quantity * currentPrice;
 
   return (
-    <Card className="w-full">
+    <Card className="h-full">
       <CardHeader>
         <div className="flex items-center gap-4">
           {bucket.coinDetails?.image && (
