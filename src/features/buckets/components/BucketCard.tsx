@@ -28,7 +28,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-6">
-          {/* First row */}
+          {/* Quantity (Left) and Average Cost (Right) in the same row */}
           <div>
             <p className="text-sm text-gray-500">Quantity</p>
             <p className="text-lg font-semibold">
@@ -36,25 +36,25 @@ export function BucketCard({ bucket }: BucketCardProps) {
             </p>
           </div>
 
-          <CoinPriceDisplay
-            price={bucket.bucket.average_price}
-            variant="average"
-          />
-
-          {/* Second row */}
-          {bucket.coinDetails?.market_data && (
-            <CoinPriceDisplay
-              price={bucket.coinDetails.market_data.current_price.usd}
-              priceChange={
-                bucket.coinDetails.market_data.price_change_percentage_24h
-              }
-              className="col-span-1"
-            />
-          )}
-
-          <div className="flex items-center justify-end">
-            <AddTransactionButton className="w-full" />
+          <div>
+            <p className="text-sm text-gray-500">Average Cost</p>
+            <p className="text-lg font-semibold">
+              Rp {bucket.bucket.average_price}
+            </p>
           </div>
+
+          {/* Current Price and Transaction Button on separate rows */}
+          {bucket.coinDetails?.market_data && (
+            <div className="col-span-2 flex justify-between items-center">
+              <CoinPriceDisplay
+                price={bucket.coinDetails.market_data.current_price.usd}
+                priceChange={
+                  bucket.coinDetails.market_data.price_change_percentage_24h
+                }
+              />
+              <AddTransactionButton className="w-auto" />
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
