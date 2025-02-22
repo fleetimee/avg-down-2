@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "../../../../auth";
 import { getAllUserBuckets } from "@/features/buckets/services/bucket.service";
 import { BucketCard } from "@/features/buckets/components/BucketCard";
+import { EmptyBucketCard } from "@/features/buckets/components/EmptyBucketCard";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -53,18 +54,17 @@ export default async function BucketMain() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {buckets.length > 0 ? (
-          buckets.map((bucket) => (
+      {buckets.length > 0 ? (
+        <div className="flex flex-col gap-4">
+          {buckets.map((bucket) => (
             <BucketCard key={bucket.bucket.id} bucket={bucket} />
-          ))
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            No buckets created yet. Start by adding your first investment
-            bucket!
-          </p>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+          <EmptyBucketCard />
+        </div>
+      )}
     </div>
   );
 }
