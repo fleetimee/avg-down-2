@@ -53,7 +53,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
           {bucket.coinDetails?.market_data && (
             <div className="col-span-2 flex justify-between items-center">
               <CoinPriceDisplay
-                price={bucket.coinDetails.market_data.current_price.usd}
+                price={bucket.coinDetails.market_data.current_price.idr}
                 priceChange={
                   bucket.coinDetails.market_data.price_change_percentage_24h
                 }

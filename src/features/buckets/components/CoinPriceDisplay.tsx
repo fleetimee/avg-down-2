@@ -28,7 +28,7 @@ export function CoinPriceDisplay({
       </p>
       <div className="flex items-baseline gap-2">
         <p className="text-lg font-semibold">
-          {variant === "current" ? "$" : "Rp"} {formattedPrice}
+          {variant === "current" ? "Rp" : "Rp"} {formattedPrice}
         </p>
         {variant === "current" && priceChange !== undefined && (
           <span
