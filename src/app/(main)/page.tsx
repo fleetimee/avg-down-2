@@ -5,10 +5,8 @@ import { getLatestUserBucket } from "@/features/buckets/services/bucket.service"
 import { BucketCard } from "@/features/buckets/components/BucketCard";
 import { AddBucketButton } from "@/features/buckets/components/AddBucketButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getLatestUserTransaction } from "@/features/transactions/services/transaction.service";
-import { TransactionCard } from "@/features/transactions/components";
-import type { EnrichedBucket } from "@/features/buckets/types/coingecko.types";
-import type { Transaction } from "@/features/transactions/types/transaction.types";
+import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
+import { TransactionTable } from "@/features/transactions/components";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -19,9 +17,9 @@ export default async function Home() {
     redirect("/sign-in");
   }
 
-  const [enrichedBucket, latestTransaction] = await Promise.all([
+  const [enrichedBucket, recentTransactions] = await Promise.all([
     getLatestUserBucket(session.user.id),
-    getLatestUserTransaction(session.user.id)
+    getRecentUserTransactions(session.user.id, 5)
   ]);
   
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
@@ -45,12 +43,16 @@ export default async function Home() {
         <h2 className="text-2xl font-semibold">Latest Bucket</h2>
         <AddBucketButton />
       </div>
-      {enrichedBucket && <BucketCard bucket={enrichedBucket as EnrichedBucket} />}
+      {enrichedBucket && <BucketCard bucket={enrichedBucket} />}
 
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Latest Transaction</h2>
+        <h2 className="text-2xl font-semibold">Recent Transactions</h2>
       </div>
-      {latestTransaction && <TransactionCard transaction={latestTransaction as Transaction} />}
+      {recentTransactions.length > 0 ? (
+        <TransactionTable transactions={recentTransactions} />
+      ) : (
+        <p className="text-sm text-muted-foreground">No transactions yet</p>
+      )}
     </div>
   );
 }

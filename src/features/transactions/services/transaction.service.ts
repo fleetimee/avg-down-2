@@ -17,3 +17,21 @@ export async function getLatestUserTransaction(
 
   return result.rows[0] || null;
 }
+
+export async function getRecentUserTransactions(
+  userId: string,
+  limit: number = 5
+): Promise<Transaction[]> {
+  const result = await db.query<Transaction>(
+    `
+    SELECT *
+    FROM transactions
+    WHERE user_id = $1
+    ORDER BY transaction_date DESC
+    LIMIT $2
+  `,
+    [userId, limit]
+  );
+
+  return result.rows;
+}
