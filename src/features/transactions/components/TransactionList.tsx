@@ -1,10 +1,11 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { TransactionWithCoin } from "../types/transaction.types";
+import { Transaction } from "../types/transaction.types";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Coins } from "lucide-react";
+import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
 
 interface TransactionListProps {
-  transactions: TransactionWithCoin[];
+  transactions: Array<Transaction & { coinDetails: CoinGeckoResponse | null }>;
 }
 
 export function TransactionList({ transactions }: TransactionListProps) {

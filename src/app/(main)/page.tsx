@@ -1,12 +1,16 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
-import { getLatestUserBucket } from "@/features/buckets/services/bucket.service";
+import {
+  getLatestUserBucket,
+  getAllUserBuckets,
+} from "@/features/buckets/services/bucket.service";
 import { BucketCard } from "@/features/buckets/components/BucketCard";
 import { AddBucketButton } from "@/features/buckets/components/AddBucketButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
 import { TransactionList } from "@/features/transactions/components";
+import { EnrichedBucket } from "@/features/buckets/types/coingecko.types";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -17,10 +21,26 @@ export default async function Home() {
     redirect("/sign-in");
   }
 
-  const [enrichedBucket, recentTransactions] = await Promise.all([
+  const [enrichedBucket, recentTransactions, buckets] = await Promise.all([
     getLatestUserBucket(session.user.id),
     getRecentUserTransactions(session.user.id, 5),
+    getAllUserBuckets(session.user.id),
   ]);
+
+  // Create a map of bucket coin details by symbol
+  const bucketMap = buckets.reduce<Record<string, EnrichedBucket>>(
+    (acc, bucket) => {
+      acc[bucket.bucket.coin_symbol] = bucket;
+      return acc;
+    },
+    {}
+  );
+
+  // Enrich transactions with bucket coin details
+  const enrichedTransactions = recentTransactions.map((transaction) => ({
+    ...transaction,
+    coinDetails: bucketMap[transaction.coin_symbol]?.coinDetails || null,
+  }));
 
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
 
@@ -54,7 +74,7 @@ export default async function Home() {
         <h2 className="text-2xl font-semibold">Recent Transactions</h2>
       </div>
       {recentTransactions.length > 0 ? (
-        <TransactionList transactions={recentTransactions} />
+        <TransactionList transactions={enrichedTransactions} />
       ) : (
         <p className="text-sm text-muted-foreground">No transactions yet</p>
       )}
