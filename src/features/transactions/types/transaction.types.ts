@@ -1,3 +1,5 @@
+import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
+
 export interface Transaction {
   id: string;
   user_id: string;
@@ -7,4 +9,9 @@ export interface Transaction {
   total_cost: number;
   transaction_date: Date;
   created_at: Date;
+  coin_symbol: string;
+}
+
+export interface TransactionWithCoin extends Transaction {
+  coinDetails: CoinGeckoResponse | null;
 }
