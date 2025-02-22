@@ -1,9 +1,10 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
-import { Terminal } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { LogoutButton } from "@/features/auth/components/logout-button";
+import { getLatestUserBucket } from "@/features/buckets/services/bucket.service";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
+import { CoinPriceDisplay } from "@/features/buckets/components/CoinPriceDisplay";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -14,24 +15,60 @@ export default async function Home() {
     redirect("/sign-in");
   }
 
+  const enrichedBucket = await getLatestUserBucket(session.user.id);
+
   return (
     <div className="flex flex-col gap-6 p-4">
-      <div className="flex flex-col items-center gap-4">
-        <h1 className="text-2xl font-bold">Welcome {session.user.name}!</h1>
-        <p className="text-gray-600">You are successfully logged in.</p>
-      </div>
+      {enrichedBucket && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-4">
+              {enrichedBucket.coinDetails?.image && (
+                <Image
+                  src={enrichedBucket.coinDetails.image.small}
+                  alt={enrichedBucket.coinDetails.name}
+                  width={32}
+                  height={32}
+                />
+              )}
+              <CardTitle>
+                {enrichedBucket.coinDetails?.name ||
+                  enrichedBucket.bucket.coin_symbol}
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Quantity</p>
+                  <p className="text-lg font-semibold">
+                    {enrichedBucket.bucket.total_quantity}
+                  </p>
+                </div>
+                <CoinPriceDisplay
+                  price={enrichedBucket.bucket.average_price}
+                  variant="average"
+                />
+              </div>
 
-      <Alert>
-        <Terminal className="h-4 w-4" />
-        <AlertTitle>Authentication Status</AlertTitle>
-        <AlertDescription>
-          You are currently signed in as {session.user.email}
-        </AlertDescription>
-      </Alert>
-
-      <div className="mt-4">
-        <LogoutButton />
-      </div>
+              {enrichedBucket.coinDetails?.market_data && (
+                <div className="grid grid-cols-2 gap-4">
+                  <CoinPriceDisplay
+                    price={
+                      enrichedBucket.coinDetails.market_data.current_price.usd
+                    }
+                    priceChange={
+                      enrichedBucket.coinDetails.market_data
+                        .price_change_percentage_24h
+                    }
+                  />
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
