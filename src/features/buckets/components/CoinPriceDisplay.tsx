@@ -22,14 +22,12 @@ export function CoinPriceDisplay({
         });
 
   return (
-    <div className={cn("flex flex-col", className)}>
+    <div className={cn("flex flex-col text-left", className)}>
       <p className="text-sm text-gray-500">
         {variant === "current" ? "Current Price" : "Average Cost"}
       </p>
       <div className="flex items-baseline gap-2">
-        <p className="text-lg font-semibold">
-          {variant === "current" ? "Rp" : "Rp"} {formattedPrice}
-        </p>
+        <p className="text-lg font-semibold">Rp {formattedPrice}</p>
         {variant === "current" && priceChange !== undefined && (
           <span
             className={cn(
