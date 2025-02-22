@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
 import { TransactionList } from "@/features/transactions/components";
 import { EnrichedBucket } from "@/features/buckets/types/coingecko.types";
+import { Coins, History } from "lucide-react";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -65,13 +66,19 @@ export default async function Home() {
       </div>
 
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Latest Bucket</h2>
+        <div className="flex items-center gap-2">
+          <Coins className="w-5 h-5" />
+          <h2 className="text-2xl font-semibold">Latest Bucket</h2>
+        </div>
         <AddBucketButton />
       </div>
       {enrichedBucket && <BucketCard bucket={enrichedBucket} />}
 
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Recent Transactions</h2>
+        <div className="flex items-center gap-2">
+          <History className="w-5 h-5" />
+          <h2 className="text-2xl font-semibold">Recent Transactions</h2>
+        </div>
       </div>
       {recentTransactions.length > 0 ? (
         <TransactionList transactions={enrichedTransactions} />

@@ -9,7 +9,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 border-t border-slate-200 bg-white pb-safe">
+    <div className="fixed bottom-0 left-0 right-0 border-">
       <div className="mx-auto max-w-md">
         <Tabs defaultValue={pathname} className="w-full">
           <TabsList className="w-full h-16 grid grid-cols-3 rounded-none border-0 bg-transparent">
