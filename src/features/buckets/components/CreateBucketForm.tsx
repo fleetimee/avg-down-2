@@ -1,3 +1,4 @@
+// app/components/CreateBucketForm.tsx
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -14,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createBucketAction } from "../actions/create-bucket.action";
-import { useActionState, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { useToast } from "@/hooks/use-toast";
 import * as z from "zod";
 
@@ -27,7 +28,8 @@ type FormValues = z.infer<typeof formSchema>;
 export function CreateBucketForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const [state, formAction] = useActionState(createBucketAction, null);
+  const [isPending, startTransition] = useTransition();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -36,30 +38,24 @@ export function CreateBucketForm() {
     },
   });
 
-  useEffect(() => {
-    if (state?.success) {
-      toast({
-        title: "Success",
-        description: state.message,
-      });
-      router.push("/bucket-main");
-    } else if (state?.message) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: state.message,
-      });
-      if (state.message.includes("must be logged in")) {
-        router.push("/sign-in");
-      }
-    }
-  }, [state, router, toast]);
+  const onSubmit = (values: FormValues) => {
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.set("coin_symbol", values.coin_symbol);
 
-  async function onSubmit(values: FormValues) {
-    const formData = new FormData();
-    formData.set("coin_symbol", values.coin_symbol);
-    formAction(formData);
-  }
+      const result = await createBucketAction(formData);
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+        router.push("/bucket-main");
+      } else {
+        setErrorMessage(result.message);
+      }
+    });
+  };
 
   return (
     <Form {...form}>
@@ -77,11 +73,14 @@ export function CreateBucketForm() {
             </FormItem>
           )}
         />
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
         <div className="flex justify-end gap-4">
           <Button type="button" variant="reverse" onClick={() => router.back()}>
             Cancel
           </Button>
-          <Button type="submit">Create Bucket</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Creating Bucket..." : "Create Bucket"}
+          </Button>
         </div>
       </form>
     </Form>

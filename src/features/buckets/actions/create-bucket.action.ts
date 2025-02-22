@@ -1,3 +1,4 @@
+// app/actions/create-bucket.action.ts
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -11,16 +12,11 @@ const newBucketSchema = z.object({
 });
 
 export type CreateBucketFormState = {
-  success?: boolean;
-  message?: string;
-  errors?: {
-    field: string;
-    message: string;
-  }[];
+  success: boolean;
+  message: string;
 };
 
 export async function createBucketAction(
-  _: CreateBucketFormState | null,
   formData: FormData
 ): Promise<CreateBucketFormState> {
   try {
@@ -40,10 +36,7 @@ export async function createBucketAction(
     if (!validatedFields.success) {
       return {
         success: false,
-        errors: validatedFields.error.issues.map((issue) => ({
-          field: issue.path.join("."),
-          message: issue.message,
-        })),
+        message: "Invalid coin symbol provided",
       };
     }
 
