@@ -11,7 +11,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
 import { TransactionList } from "@/features/transactions/components";
 import { EnrichedBucket } from "@/features/buckets/types/coingecko.types";
-import { Coins, History } from "lucide-react";
+import { Coins, History, Home as HomeIcon } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+} from "@/components/ui/breadcrumb";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -28,7 +34,6 @@ export default async function Home() {
     getAllUserBuckets(session.user.id),
   ]);
 
-  // Create a map of bucket coin details by symbol
   const bucketMap = buckets.reduce<Record<string, EnrichedBucket>>(
     (acc, bucket) => {
       acc[bucket.bucket.coin_symbol] = bucket;
@@ -37,7 +42,6 @@ export default async function Home() {
     {}
   );
 
-  // Enrich transactions with bucket coin details
   const enrichedTransactions = recentTransactions.map((transaction) => ({
     ...transaction,
     coinDetails: bucketMap[transaction.coin_symbol]?.coinDetails || null,
@@ -47,6 +51,17 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col gap-6 p-4">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/" className="flex items-center gap-2">
+              <HomeIcon className="h-4 w-4" />
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="flex items-center gap-4 mb-2">
         <Avatar>
           <AvatarImage
