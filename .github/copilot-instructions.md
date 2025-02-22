@@ -185,6 +185,8 @@ export default function Chat() {
 - Follow consistent spacing and layout patterns
 - Ensure responsive design across breakpoints
 - Use CSS variables for theme customization
+- Do not use barrel exports
+- Use Zod for schema validation
 
 ### Accessibility
 
