@@ -32,9 +32,8 @@ export function BucketCard({ bucket }: BucketCardProps) {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-6">
-          {/* Quantity (Left) and Average Cost (Right) in the same row */}
+      <CardContent className="flex flex-col gap-6">
+        <div className="flex justify-between">
           <div>
             <p className="text-sm text-gray-500">Quantity</p>
             <p className="text-lg font-semibold">
@@ -48,20 +47,19 @@ export function BucketCard({ bucket }: BucketCardProps) {
               Rp {bucket.bucket.average_price}
             </p>
           </div>
-
-          {/* Current Price and Transaction Button on separate rows */}
-          {bucket.coinDetails?.market_data && (
-            <div className="col-span-2 flex justify-between items-center">
-              <CoinPriceDisplay
-                price={bucket.coinDetails.market_data.current_price.idr}
-                priceChange={
-                  bucket.coinDetails.market_data.price_change_percentage_24h
-                }
-              />
-              <AddTransactionButton className="w-auto" />
-            </div>
-          )}
         </div>
+
+        {bucket.coinDetails?.market_data && (
+          <div className="flex flex-col gap-4">
+            <CoinPriceDisplay
+              price={bucket.coinDetails.market_data.current_price.idr}
+              priceChange={
+                bucket.coinDetails.market_data.price_change_percentage_24h
+              }
+            />
+            <AddTransactionButton className="w-full" />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
