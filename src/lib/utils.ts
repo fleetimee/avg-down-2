@@ -33,7 +33,8 @@ export function formatPrice(price: number) {
   }).format(price);
 }
 
-export function formatCompactPrice(price: number) {
+export function formatCompactPrice(price: number | null) {
+  if (!price) return "0";
   return new Intl.NumberFormat("id-ID", {
     notation: "compact",
     maximumFractionDigits: 1,
@@ -41,7 +42,8 @@ export function formatCompactPrice(price: number) {
   }).format(price);
 }
 
-export function formatNonCompactPrice(price: number) {
+export function formatNonCompactPrice(price: number | null) {
+  if (!price) return "0.00";
   return price.toLocaleString("id-ID", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

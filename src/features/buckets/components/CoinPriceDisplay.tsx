@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { formatCompactPrice, formatNonCompactPrice } from "@/lib/utils";
 
 interface CoinPriceDisplayProps {
-  price: number;
+  price: number | null;
   variant?: "current" | "average";
   priceChange?: number;
   className?: string;

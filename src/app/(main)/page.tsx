@@ -38,7 +38,7 @@ export default async function Home() {
 
   const bucketMap = buckets.reduce<Record<string, EnrichedBucket>>(
     (acc, bucket) => {
-      acc[bucket.bucket.coin_symbol] = bucket;
+      acc[bucket.bucket.coin_symbol.toLowerCase()] = bucket;
       return acc;
     },
     {}
@@ -46,7 +46,8 @@ export default async function Home() {
 
   const enrichedTransactions = recentTransactions.map((transaction) => ({
     ...transaction,
-    coinDetails: bucketMap[transaction.coin_symbol]?.coinDetails || null,
+    coinDetails:
+      bucketMap[transaction.coin_symbol.toLowerCase()]?.coinDetails || null,
   }));
 
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";

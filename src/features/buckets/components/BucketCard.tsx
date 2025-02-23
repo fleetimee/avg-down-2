@@ -12,7 +12,7 @@ interface BucketCardProps {
 
 export function BucketCard({ bucket }: BucketCardProps) {
   const currentPrice = bucket.coinDetails?.market_data?.current_price.idr ?? 0;
-  const currentValue = bucket.bucket.total_quantity * currentPrice;
+  const currentValue = (bucket.bucket.total_quantity ?? 0) * currentPrice;
 
   return (
     <Link href={`/bucket-main/${bucket.bucket.id}`} className="block">
@@ -21,17 +21,19 @@ export function BucketCard({ bucket }: BucketCardProps) {
           <div className="flex items-center gap-4">
             {bucket.coinDetails?.image && (
               <Image
-                src={bucket.coinDetails.image.small}
+                src={bucket.coinDetails.image.large}
                 alt={bucket.coinDetails.name}
-                width={32}
-                height={32}
+                width={48}
+                height={48}
+                className="rounded-full"
               />
             )}
             <div className="flex flex-col">
-              <CardTitle>
-                {bucket.coinDetails?.name || bucket.bucket.coin_symbol}
+              <CardTitle className="text-xl">
+                {bucket.coinDetails?.name ||
+                  bucket.bucket.coin_symbol.toUpperCase()}
               </CardTitle>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 Created {formatJakartaTime(bucket.bucket.created_at)}
               </span>
             </div>
@@ -44,7 +46,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
             <div className="text-left w-1/2">
               <p className="text-sm text-gray-500">Quantity</p>
               <p className="text-base font-semibold">
-                {bucket.bucket.total_quantity}
+                {bucket.bucket.total_quantity ?? "0"}
               </p>
             </div>
 
@@ -52,7 +54,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
               <CoinPriceDisplay
                 price={bucket.bucket.average_price}
                 variant="average"
-                compact={false}
+                compact={true}
               />
             </div>
           </div>
@@ -63,7 +65,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
               <div className="flex justify-between items-start w-full">
                 <div className="text-left w-1/2">
                   <CoinPriceDisplay
-                    price={bucket.coinDetails.market_data.current_price.idr}
+                    price={currentPrice}
                     priceChange={
                       bucket.coinDetails.market_data.price_change_percentage_24h
                     }

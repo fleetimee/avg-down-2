@@ -6,17 +6,25 @@ const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY;
 export async function getCoinDetails(
   coinId: string
 ): Promise<CoinGeckoResponse | null> {
+  if (!coinId) return null;
+
   try {
-    const response = await fetch(`${COINGECKO_API_URL}/coins/${coinId}`, {
-      headers: {
-        accept: "application/json",
-        "x-cg-demo-api-key": COINGECKO_API_KEY ?? "",
-      },
-      next: { revalidate: 300 }, // Cache for 5 minutes
-    });
+    const response = await fetch(
+      `${COINGECKO_API_URL}/coins/${coinId.toLowerCase()}`,
+      {
+        headers: {
+          accept: "application/json",
+          "x-cg-demo-api-key": COINGECKO_API_KEY ?? "",
+        },
+        next: { revalidate: 300 }, // Cache for 5 minutes
+      }
+    );
 
     if (!response.ok) {
-      throw new Error(`CoinGecko API error: ${response.status}`);
+      console.error(
+        `CoinGecko API error: ${response.status} for coin ${coinId}`
+      );
+      return null;
     }
 
     return await response.json();

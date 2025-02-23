@@ -5,7 +5,11 @@ import { getBucketById } from "@/features/buckets/services/bucket.service";
 import { CoinPriceDisplay } from "@/features/buckets/components/CoinPriceDisplay";
 import { AddTransactionButton } from "@/features/buckets/components/AddTransactionButton";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatCompactPrice, formatJakartaTime } from "@/lib/utils";
+import {
+  formatCompactPrice,
+  formatJakartaTime,
+  formatNonCompactPrice,
+} from "@/lib/utils";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -38,7 +42,7 @@ export default async function BucketDetailsPage({ params }: PageProps) {
 
   const { bucket, coinDetails } = enrichedBucket;
   const currentPrice = coinDetails?.market_data?.current_price.idr ?? 0;
-  const currentValue = bucket.total_quantity * currentPrice;
+  const currentValue = (bucket.total_quantity ?? 0) * currentPrice;
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -96,11 +100,15 @@ export default async function BucketDetailsPage({ params }: PageProps) {
           <div className="flex justify-between items-start">
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Quantity</p>
-              <p className="text-xl font-semibold">{bucket.total_quantity}</p>
+              <p className="text-xl font-semibold">
+                {bucket.total_quantity ?? 0}
+              </p>
             </div>
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Average Cost</p>
-              <p className="text-xl font-semibold">Rp {bucket.average_price}</p>
+              <p className="text-xl font-semibold">
+                Rp {formatNonCompactPrice(bucket.average_price)}
+              </p>
             </div>
           </div>
 

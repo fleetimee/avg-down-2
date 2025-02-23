@@ -1,6 +1,10 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Transaction } from "../types/transaction.types";
-import { formatPrice, formatJakartaTime } from "@/lib/utils";
+import {
+  formatJakartaTime,
+  formatNonCompactPrice,
+  formatCompactPrice,
+} from "@/lib/utils";
 import { Coins } from "lucide-react";
 import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
 
@@ -12,11 +16,17 @@ export function TransactionList({ transactions }: TransactionListProps) {
   return (
     <div className="flex flex-col gap-4">
       {transactions.map((transaction) => (
-        <Alert key={transaction.id} className="flex gap-4 bg-main border-2 border-border">
+        <Alert
+          key={transaction.id}
+          className="flex gap-4 bg-main border-2 border-border"
+        >
           <Coins className="h-5 w-5 mt-[2px]" />
           <div className="flex-1">
             <AlertTitle className="flex items-center justify-between">
-              <span>{transaction.coinDetails?.name || transaction.coin_symbol}</span>
+              <span>
+                {transaction.coinDetails?.name ||
+                  transaction.coin_symbol.toUpperCase()}
+              </span>
               <span className="text-sm font-normal">
                 {formatJakartaTime(transaction.transaction_date)}
               </span>
@@ -24,7 +34,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
             <AlertDescription className="mt-2 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Quantity:</span>
-                <span className="text-sm">{transaction.quantity}</span>
+                <span className="text-sm">{transaction.quantity ?? 0}</span>
               </div>
 
               <div className="flex items-center justify-between">
@@ -32,7 +42,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                   Price per coin:
                 </span>
                 <span className="text-sm">
-                  {formatPrice(transaction.price_per_coin)}
+                  Rp {formatNonCompactPrice(transaction.price_per_coin)}
                 </span>
               </div>
 
@@ -41,7 +51,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                   Total cost:
                 </span>
                 <span className="text-sm font-medium">
-                  {formatPrice(transaction.total_cost)}
+                  Rp {formatCompactPrice(transaction.total_cost)}
                 </span>
               </div>
 
