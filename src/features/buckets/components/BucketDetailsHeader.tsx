@@ -23,6 +23,12 @@ export function BucketDetailsHeader({
   createdAt,
   bucketId,
 }: BucketDetailsHeaderProps) {
+  const handleDelete = async () => {
+    const isDeleted = await deleteBucketAction(bucketId);
+
+    console.log("isDeleted", isDeleted);
+  };
+
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-6">
@@ -56,7 +62,7 @@ export function BucketDetailsHeader({
           </DropdownMenuItem>
           <DropdownMenuItem
             className="flex items-center gap-2 text-destructive"
-            onClick={() => deleteBucketAction(bucketId)}
+            onClick={handleDelete}
           >
             <Trash2 className="h-4 w-4" />
             Delete Bucket

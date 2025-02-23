@@ -4,6 +4,7 @@ import { auth } from "@/../auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { deleteBucketById } from "../services/bucket.service";
+import { revalidatePath } from "next/cache";
 
 export async function deleteBucketAction(bucketId: string): Promise<boolean> {
   const session = await auth.api.getSession({
@@ -15,15 +16,12 @@ export async function deleteBucketAction(bucketId: string): Promise<boolean> {
   }
 
   try {
-    const isDeleted = await deleteBucketById(bucketId, session.user.id);
-
-    if (isDeleted) {
-      redirect("/bucket-main");
-    }
-
-    return false;
+    await deleteBucketById(bucketId, session.user.id);
   } catch (error) {
     console.error("Failed to delete bucket:", error);
     return false;
   }
+
+  revalidatePath("/bucket-main");
+  redirect("/bucket-main");
 }
