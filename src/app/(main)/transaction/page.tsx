@@ -16,11 +16,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllUserBuckets } from "@/features/buckets/services/bucket.service";
 
 interface TransactionPageProps {
-  searchParams: Promise<{ coin?: string }>;
+  searchParams: { coin?: string };
 }
 
-export default async function TransactionPage(props: TransactionPageProps) {
-  const searchParams = await props.searchParams;
+export default async function TransactionPage({
+  searchParams,
+}: TransactionPageProps) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -36,23 +37,28 @@ export default async function TransactionPage(props: TransactionPageProps) {
 
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
 
+  // Create a map of coin symbols to their details
   const coinDetailsMap = buckets.reduce((acc, bucket) => {
     if (bucket.coinDetails) {
       acc[bucket.bucket.coin_symbol.toLowerCase()] = {
         symbol: bucket.bucket.coin_symbol,
-        name: bucket.coinDetails.name
+        name: bucket.coinDetails.name,
       };
     }
     return acc;
   }, {} as Record<string, { symbol: string; name: string }>);
 
+  // Map coins for the combobox
   const availableCoins = Object.values(coinDetailsMap);
 
-  const enrichedTransactions = recentTransactions.map(tx => ({
+  // Enrich transactions with coin details
+  const enrichedTransactions = recentTransactions.map((tx) => ({
     ...tx,
-    coinDetails: buckets.find(b => 
-      b.bucket.coin_symbol.toLowerCase() === tx.coin_symbol.toLowerCase()
-    )?.coinDetails || null
+    coinDetails:
+      buckets.find(
+        (b) =>
+          b.bucket.coin_symbol.toLowerCase() === tx.coin_symbol.toLowerCase()
+      )?.coinDetails || null,
   }));
 
   return (
@@ -66,7 +72,10 @@ export default async function TransactionPage(props: TransactionPageProps) {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/transaction" className="flex items-center gap-2">
+            <BreadcrumbLink
+              href="/transaction"
+              className="flex items-center gap-2"
+            >
               <History className="h-4 w-4" />
               Transactions
             </BreadcrumbLink>
@@ -84,15 +93,20 @@ export default async function TransactionPage(props: TransactionPageProps) {
         </Avatar>
         <div>
           <h1 className="text-2xl font-bold">Transaction History</h1>
-          <p className="text-sm text-muted-foreground">Track your investment journey</p>
+          <p className="text-sm text-muted-foreground">
+            Track your investment journey
+          </p>
         </div>
       </div>
 
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          {searchParams.coin 
-            ? `Showing your last 10 transactions for ${coinDetailsMap[searchParams.coin.toLowerCase()]?.name || searchParams.coin.toUpperCase()}`
+          {searchParams.coin
+            ? `Showing your last 10 transactions for ${
+                coinDetailsMap[searchParams.coin.toLowerCase()]?.name ||
+                searchParams.coin.toUpperCase()
+              }`
             : "View your last 10 transactions across all cryptocurrency buckets"}
         </AlertDescription>
       </Alert>
@@ -105,9 +119,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
       </div>
 
       {enrichedTransactions.length > 0 ? (
-        <TransactionList
-          transactions={enrichedTransactions}
-        />
+        <TransactionList transactions={enrichedTransactions} />
       ) : (
         <EmptyTransactionCard />
       )}

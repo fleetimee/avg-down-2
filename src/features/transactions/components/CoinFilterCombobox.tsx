@@ -5,6 +5,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandList,
   CommandEmpty,
   CommandGroup,
   CommandInput,
@@ -28,8 +29,19 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState("");
 
   const currentCoin = searchParams.get("coin") || "";
+
+  const filteredCoins = React.useMemo(() => {
+    if (!searchValue) return coins;
+    const search = searchValue.toLowerCase();
+    return coins.filter(
+      (coin) =>
+        coin.name.toLowerCase().includes(search) ||
+        coin.symbol.toLowerCase().includes(search)
+    );
+  }, [coins, searchValue]);
 
   const handleSelect = (value: string) => {
     setIsLoading(true);
@@ -54,48 +66,55 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
           className="w-full justify-between"
           disabled={isLoading}
         >
-          {isLoading ? (
-            "Loading..."
-          ) : currentCoin ? (
-            coins.find((coin) => coin.symbol.toLowerCase() === currentCoin.toLowerCase())?.name || currentCoin.toUpperCase()
-          ) : (
-            "Filter by coin..."
-          )}
+          {isLoading
+            ? "Loading..."
+            : currentCoin
+            ? coins.find(
+                (coin) =>
+                  coin.symbol.toLowerCase() === currentCoin.toLowerCase()
+              )?.name || currentCoin.toUpperCase()
+            : "Filter by coin..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0" align="start">
+      <PopoverContent align="start" className="p-0">
         <Command>
-          <CommandInput placeholder="Search coin..." />
-          <CommandEmpty>No coin found.</CommandEmpty>
-          <CommandGroup>
-            <CommandItem value="" onSelect={() => handleSelect("")}>
-              <Check
-                className={cn(
-                  "mr-2 h-4 w-4",
-                  !currentCoin ? "opacity-100" : "opacity-0"
-                )}
-              />
-              All coins
-            </CommandItem>
-            {coins.map((coin) => (
-              <CommandItem
-                key={coin.symbol}
-                value={coin.symbol.toLowerCase()}
-                onSelect={() => handleSelect(coin.symbol)}
-              >
+          <CommandList>
+            <CommandInput
+              placeholder="Search coin..."
+              value={searchValue}
+              onValueChange={setSearchValue}
+            />
+            <CommandEmpty>No coin found.</CommandEmpty>
+            <CommandGroup>
+              <CommandItem onSelect={() => handleSelect("")}>
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    currentCoin.toLowerCase() === coin.symbol.toLowerCase()
-                      ? "opacity-100"
-                      : "opacity-0"
+                    !currentCoin ? "opacity-100" : "opacity-0"
                   )}
                 />
-                {coin.name}
+                All coins
               </CommandItem>
-            ))}
-          </CommandGroup>
+              {filteredCoins.map((coin) => (
+                <CommandItem
+                  key={coin.symbol}
+                  value={coin.symbol.toLowerCase()}
+                  onSelect={() => handleSelect(coin.symbol.toLowerCase())}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      currentCoin.toLowerCase() === coin.symbol.toLowerCase()
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
+                  {coin.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
