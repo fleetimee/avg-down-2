@@ -49,6 +49,20 @@ export async function createBucketAction(
       message: "Bucket created successfully",
     };
   } catch (error) {
+    if (error instanceof Error) {
+      // PostgreSQL unique violation error code
+      if (
+        error.message.includes(
+          'duplicate key value violates unique constraint "buckets_user_id_coin_symbol_key"'
+        )
+      ) {
+        return {
+          success: false,
+          message: "You already have a bucket for this cryptocurrency",
+        };
+      }
+    }
+
     console.error("Failed to create bucket:", error);
     return {
       success: false,

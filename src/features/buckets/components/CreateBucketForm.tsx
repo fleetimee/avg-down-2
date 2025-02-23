@@ -40,6 +40,7 @@ export function CreateBucketForm() {
   });
 
   const onSubmit = (values: FormValues) => {
+    setErrorMessage(null); // Reset error message on new submission
     startTransition(async () => {
       const formData = new FormData();
       formData.set("coin_symbol", values.coin_symbol);
@@ -54,6 +55,12 @@ export function CreateBucketForm() {
         router.push("/bucket-main");
       } else {
         setErrorMessage(result.message);
+        if (result.message.includes("already have a bucket")) {
+          form.setError("coin_symbol", {
+            type: "manual",
+            message: "You already have a bucket for this cryptocurrency",
+          });
+        }
       }
     });
   };

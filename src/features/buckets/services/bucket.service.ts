@@ -75,7 +75,6 @@ export async function createBucket(
   userId: string,
   coin_symbol: string
 ): Promise<EnrichedBucket> {
-  // Insert new bucket with initial values
   const result = await db.query<Bucket>(
     `INSERT INTO buckets (
       user_id,
