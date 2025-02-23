@@ -133,7 +133,7 @@ export default async function BucketDetailsPage(props: PageProps) {
         <div className="grid grid-cols-2 gap-4 max-w-2xl">
           <Card>
             <CardContent className="pt-6">
-              <h2 className="text-lg font-semibold mb-4">Price Information</h2>
+              <h2 className="text-lg font-semibold mb-4">Information</h2>
               <div className="flex flex-col gap-4">
                 <div>
                   <CoinPriceDisplay
