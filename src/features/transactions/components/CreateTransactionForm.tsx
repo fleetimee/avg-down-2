@@ -21,8 +21,14 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
-  quantity: z.coerce.number().positive("Quantity must be positive"),
-  price_per_coin: z.coerce.number().positive("Price must be positive"),
+  quantity: z.number({
+    required_error: "Quantity is required",
+    invalid_type_error: "Quantity must be a number",
+  }).positive("Quantity must be positive"),
+  price_per_coin: z.number({
+    required_error: "Price is required",
+    invalid_type_error: "Price must be a number",
+  }).positive("Price must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -42,8 +48,8 @@ export function CreateTransactionForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      quantity: 0,
-      price_per_coin: 0,
+      quantity: undefined,
+      price_per_coin: undefined,
     },
   });
 
@@ -51,8 +57,8 @@ export function CreateTransactionForm({
     setErrorMessage(null);
     startTransition(async () => {
       const formData = new FormData();
-      formData.set("quantity", values.quantity.toString());
-      formData.set("price_per_coin", values.price_per_coin.toString());
+      formData.set("quantity", values.quantity?.toString() || "");
+      formData.set("price_per_coin", values.price_per_coin?.toString() || "");
 
       const result = await createTransactionAction(bucketId, formData);
 
@@ -66,6 +72,14 @@ export function CreateTransactionForm({
         setErrorMessage(result.message);
       }
     });
+  };
+
+  const handleNumberInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    onChange: (value: number | undefined) => void
+  ) => {
+    const value = e.target.value;
+    onChange(value === "" ? undefined : parseFloat(value));
   };
 
   return (
@@ -90,7 +104,8 @@ export function CreateTransactionForm({
                   step="any"
                   placeholder="0.00"
                   {...field}
-                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  value={field.value ?? ""}
+                  onChange={(e) => handleNumberInput(e, field.onChange)}
                 />
               </FormControl>
               <FormMessage />
@@ -110,7 +125,8 @@ export function CreateTransactionForm({
                   step="any"
                   placeholder="0"
                   {...field}
-                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  value={field.value ?? ""}
+                  onChange={(e) => handleNumberInput(e, field.onChange)}
                 />
               </FormControl>
               <FormMessage />
