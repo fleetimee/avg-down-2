@@ -9,6 +9,7 @@ import {
   formatCompactPrice,
   formatJakartaTime,
   formatNonCompactPrice,
+  formatPrice,
 } from "@/lib/utils";
 import {
   Breadcrumb,
@@ -115,14 +116,12 @@ export default async function BucketDetailsPage(props: PageProps) {
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Total Cost</p>
               <p className=" font-semibold">
-                Rp {formatCompactPrice(bucket.total_cost)}
+                {formatPrice(bucket.total_cost || 0)}
               </p>
             </div>
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Current Value</p>
-              <p className="font-semibold">
-                Rp {formatNonCompactPrice(currentValue)}
-              </p>
+              <p className="font-semibold">{formatPrice(currentValue)}</p>
             </div>
           </div>
         </div>
