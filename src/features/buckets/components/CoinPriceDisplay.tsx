@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import { formatCompactPrice, formatNonCompactPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
+import { formatCompactPrice } from "@/lib/utils";
 
 interface CoinPriceDisplayProps {
   price: number | null;
@@ -18,7 +18,7 @@ export function CoinPriceDisplay({
 }: CoinPriceDisplayProps) {
   const formattedPrice =
     variant === "current" || !compact
-      ? formatNonCompactPrice(price)
+      ? formatPrice(price ?? 0)
       : formatCompactPrice(price);
 
   return (
@@ -39,7 +39,7 @@ export function CoinPriceDisplay({
           </span>
         )}
       </div>
-      <p className="text-base font-semibold">Rp {formattedPrice}</p>
+      <p className="text-base font-semibold">{formattedPrice}</p>
     </div>
   );
 }

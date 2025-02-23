@@ -8,7 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   formatCompactPrice,
   formatJakartaTime,
-  formatNonCompactPrice,
   formatPrice,
 } from "@/lib/utils";
 import {
@@ -107,7 +106,7 @@ export default async function BucketDetailsPage(props: PageProps) {
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Average Cost</p>
               <p className=" font-semibold">
-                Rp {formatNonCompactPrice(bucket.average_price)}
+                {formatPrice(bucket.average_price || 0)}
               </p>
             </div>
           </div>

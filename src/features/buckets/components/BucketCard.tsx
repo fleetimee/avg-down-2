@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CoinPriceDisplay } from "./CoinPriceDisplay";
 import { EnrichedBucket } from "../types/coingecko.types";
 import { AddTransactionButton } from "./AddTransactionButton";
-import { formatJakartaTime } from "@/lib/utils";
+import { formatJakartaTime, formatPrice } from "@/lib/utils";
 
 interface BucketCardProps {
   bucket: EnrichedBucket;
@@ -53,7 +53,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
             <div className="text-left w-1/2">
               <CoinPriceDisplay
                 price={bucket.bucket.average_price}
-                variant="current"
+                variant="average"
                 compact={false}
               />
             </div>
@@ -76,7 +76,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
                 <div className="text-left w-1/2">
                   <p className="text-sm text-gray-500">Total Value</p>
                   <p className="text-base font-semibold">
-                    Rp {currentValue.toLocaleString("id-ID")}
+                    {formatPrice(currentValue ?? 0)}
                   </p>
                 </div>
               </div>
