@@ -11,6 +11,8 @@ import {
 import { formatJakartaTime } from "@/lib/utils";
 import { type CoinGeckoResponse } from "../types/coingecko.types";
 import { deleteBucketAction } from "../actions/delete-bucket.action";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface BucketDetailsHeaderProps {
   coinDetails: CoinGeckoResponse;
@@ -23,10 +25,25 @@ export function BucketDetailsHeader({
   createdAt,
   bucketId,
 }: BucketDetailsHeaderProps) {
-  const handleDelete = async () => {
-    const isDeleted = await deleteBucketAction(bucketId);
+  const { toast } = useToast();
+  const router = useRouter();
 
-    console.log("isDeleted", isDeleted);
+  const handleDelete = async () => {
+    const { success } = await deleteBucketAction(bucketId);
+
+    if (success) {
+      toast({
+        title: "Success",
+        description: "Bucket deleted successfully",
+      });
+      router.push("/bucket-main");
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to delete bucket",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
