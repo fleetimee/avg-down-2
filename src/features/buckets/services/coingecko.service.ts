@@ -1,29 +1,29 @@
 import { CoinGeckoResponse, CoinSearchResult } from "../types/coingecko.types";
 
-const COINGECKO_API_URL = "https://api.coingecko.com/api/v3";
-const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY;
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+function isValidCoinId(coinId: string): boolean {
+  return /^[a-zA-Z0-9-_]+$/.test(coinId);
+}
 
 export async function getCoinDetails(
   coinId: string
 ): Promise<CoinGeckoResponse | null> {
-  if (!coinId) return null;
+  if (!coinId || !isValidCoinId(coinId)) {
+    console.error(`Invalid coin ID format: ${coinId}`);
+    return null;
+  }
 
   try {
     const response = await fetch(
-      `${COINGECKO_API_URL}/coins/${coinId.toLowerCase()}`,
+      `${BASE_URL}/api/coins/${encodeURIComponent(coinId.toLowerCase())}`,
       {
-        headers: {
-          accept: "application/json",
-          "x-cg-demo-api-key": COINGECKO_API_KEY ?? "",
-        },
         next: { revalidate: 300 }, // Cache for 5 minutes
       }
     );
 
     if (!response.ok) {
-      console.error(
-        `CoinGecko API error: ${response.status} for coin ${coinId}`
-      );
+      console.error(`API error: ${response.status} for coin ${coinId}`);
       return null;
     }
 
@@ -39,18 +39,14 @@ export async function searchCoins(query: string): Promise<CoinSearchResult[]> {
 
   try {
     const response = await fetch(
-      `${COINGECKO_API_URL}/search?query=${encodeURIComponent(query)}`,
+      `${BASE_URL}/api/coins/search?query=${encodeURIComponent(query)}`,
       {
-        headers: {
-          accept: "application/json",
-          "x-cg-demo-api-key": COINGECKO_API_KEY ?? "",
-        },
         next: { revalidate: 300 }, // Cache for 5 minutes
       }
     );
 
     if (!response.ok) {
-      throw new Error(`CoinGecko API error: ${response.status}`);
+      throw new Error(`API error: ${response.status}`);
     }
 
     const data = await response.json();
