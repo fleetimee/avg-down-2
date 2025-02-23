@@ -1,6 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { Transaction } from "../types/transaction.types";
-import { formatPrice, formatJakartaTime } from "@/lib/utils";
+import {
+  formatPrice,
+  formatJakartaTime,
+  formatNonCompactPrice,
+} from "@/lib/utils";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -27,7 +31,7 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
         <div className="flex items-center justify-between border-t border-border pt-2 mt-1">
           <span className="text-sm font-medium">Total cost</span>
           <span className="font-semibold">
-            {formatPrice(transaction.total_cost)}
+            {formatNonCompactPrice(transaction.total_cost)}
           </span>
         </div>
       </div>
