@@ -125,52 +125,39 @@ export default async function BucketDetailsPage({ params }: PageProps) {
 
       {/* Market Data Section */}
       {coinDetails?.market_data && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 max-w-2xl">
           <Card>
             <CardContent className="pt-6">
               <h2 className="text-lg font-semibold mb-4">Price Information</h2>
               <div className="flex flex-col gap-4">
-                <div className="flex justify-between items-start">
-                  <div className="text-left w-1/2">
-                    <CoinPriceDisplay
-                      price={coinDetails.market_data.current_price.idr}
-                      priceChange={
-                        coinDetails.market_data.price_change_percentage_24h
-                      }
-                      compact={false}
-                    />
-                  </div>
-                  <div className="text-left w-1/2">
-                    <p className="text-sm text-muted-foreground">
-                      24h Trading Volume
-                    </p>
-                    <p className="text-base font-semibold">
-                      Rp{" "}
-                      {formatCompactPrice(
-                        coinDetails.market_data.total_volume.idr
-                      )}
-                    </p>
-                  </div>
+                <div>
+                  <CoinPriceDisplay
+                    price={coinDetails.market_data.current_price.idr}
+                    priceChange={
+                      coinDetails.market_data.price_change_percentage_24h
+                    }
+                    compact={false}
+                  />
                 </div>
 
-                <div className="flex justify-between items-start">
-                  <div className="text-left w-1/2">
-                    <p className="text-sm text-muted-foreground">Market Cap</p>
-                    <p className="text-base font-semibold">
-                      Rp{" "}
-                      {formatCompactPrice(
-                        coinDetails.market_data.market_cap.idr
-                      )}
-                    </p>
-                  </div>
-                  <div className="text-left w-1/2">
-                    <p className="text-sm text-muted-foreground">
-                      Market Cap Rank
-                    </p>
-                    <p className="text-base font-semibold">
-                      #{coinDetails.market_cap_rank || "N/A"}
-                    </p>
-                  </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    24h Trading Volume
+                  </p>
+                  <p className="text-base font-semibold">
+                    Rp{" "}
+                    {formatCompactPrice(
+                      coinDetails.market_data.total_volume.idr
+                    )}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Market Cap</p>
+                  <p className="text-base font-semibold">
+                    Rp{" "}
+                    {formatCompactPrice(coinDetails.market_data.market_cap.idr)}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -193,48 +180,21 @@ export default async function BucketDetailsPage({ params }: PageProps) {
                     label: "30d",
                     value: coinDetails.market_data.price_change_percentage_30d,
                   },
-                ].map(
-                  (change, index, arr) =>
-                    index % 2 === 0 && (
-                      <div
-                        key={change.label}
-                        className="flex justify-between items-start"
-                      >
-                        <div className="text-left w-1/2">
-                          <p className="text-sm text-muted-foreground">
-                            {change.label} Change
-                          </p>
-                          <p
-                            className={`text-base font-semibold ${
-                              change.value >= 0
-                                ? "text-greenHulk"
-                                : "text-red-500"
-                            }`}
-                          >
-                            {change.value >= 0 ? "+" : ""}
-                            {change.value?.toFixed(2)}%
-                          </p>
-                        </div>
-                        {index + 1 < arr.length && (
-                          <div className="text-left w-1/2">
-                            <p className="text-sm text-muted-foreground">
-                              {arr[index + 1].label} Change
-                            </p>
-                            <p
-                              className={`text-base font-semibold ${
-                                arr[index + 1].value >= 0
-                                  ? "text-greenHulk"
-                                  : "text-red-500"
-                              }`}
-                            >
-                              {arr[index + 1].value >= 0 ? "+" : ""}
-                              {arr[index + 1].value?.toFixed(2)}%
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )
-                )}
+                ].map((change) => (
+                  <div key={change.label}>
+                    <p className="text-sm text-muted-foreground">
+                      {change.label} Change
+                    </p>
+                    <p
+                      className={`text-base font-semibold ${
+                        change.value >= 0 ? "text-greenHulk" : "text-red-500"
+                      }`}
+                    >
+                      {change.value >= 0 ? "+" : ""}
+                      {change.value?.toFixed(2)}%
+                    </p>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -243,17 +203,19 @@ export default async function BucketDetailsPage({ params }: PageProps) {
 
       {/* Coin Description */}
       {coinDetails?.description?.en && (
-        <Card>
-          <CardContent className="pt-6">
-            <h2 className="text-lg font-semibold mb-4">
-              About {coinDetails.name}
-            </h2>
-            <div
-              className="text-sm text-muted-foreground prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: coinDetails.description.en }}
-            />
-          </CardContent>
-        </Card>
+        <div className="max-w-2xl">
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="text-lg font-semibold mb-4">
+                About {coinDetails.name}
+              </h2>
+              <div
+                className="text-sm text-muted-foreground prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: coinDetails.description.en }}
+              />
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );
