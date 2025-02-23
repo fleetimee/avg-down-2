@@ -41,6 +41,7 @@ export default async function BucketDetailsPage(props: PageProps) {
         <BucketDetailsHeader
           coinDetails={coinDetails}
           createdAt={bucket.created_at}
+          bucketId={bucket.id}
         />
 
         <BucketStatsOverview

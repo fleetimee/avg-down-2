@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { MoreVertical, ListIcon, Trash2 } from "lucide-react";
 import {
@@ -8,15 +10,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatJakartaTime } from "@/lib/utils";
 import { type CoinGeckoResponse } from "../types/coingecko.types";
+import { deleteBucketAction } from "../actions/delete-bucket.action";
 
 interface BucketDetailsHeaderProps {
   coinDetails: CoinGeckoResponse;
   createdAt: Date;
+  bucketId: string;
 }
 
 export function BucketDetailsHeader({
   coinDetails,
   createdAt,
+  bucketId,
 }: BucketDetailsHeaderProps) {
   return (
     <div className="flex items-center justify-between mb-6">
@@ -49,7 +54,10 @@ export function BucketDetailsHeader({
             <ListIcon className="h-4 w-4" />
             View Transactions
           </DropdownMenuItem>
-          <DropdownMenuItem className="flex items-center gap-2 text-destructive">
+          <DropdownMenuItem
+            className="flex items-center gap-2 text-destructive"
+            onClick={() => deleteBucketAction(bucketId)}
+          >
             <Trash2 className="h-4 w-4" />
             Delete Bucket
           </DropdownMenuItem>
