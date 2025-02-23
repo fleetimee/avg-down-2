@@ -13,14 +13,13 @@ import { Home, LayoutGrid, Plus } from "lucide-react";
 import { getBucketById } from "@/features/buckets/services/bucket.service";
 
 interface NewTransactionPageProps {
-  params: {
+  params: Promise<{
     bucketId: string;
-  };
+  }>;
 }
 
-export default async function NewTransactionPage({
-  params,
-}: NewTransactionPageProps) {
+export default async function NewTransactionPage(props: NewTransactionPageProps) {
+  const params = await props.params;
   const session = await auth.api.getSession({
     headers: await headers(),
   });

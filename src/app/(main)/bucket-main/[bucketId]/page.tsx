@@ -21,12 +21,13 @@ import { Home, LayoutGrid, ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     bucketId: string;
-  };
+  }>;
 }
 
-export default async function BucketDetailsPage({ params }: PageProps) {
+export default async function BucketDetailsPage(props: PageProps) {
+  const params = await props.params;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
