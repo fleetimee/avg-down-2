@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Settings, User } from "lucide-react";
+import { Home, Settings, History } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "./tabs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,13 +22,13 @@ export function BottomNav() {
                 <span className="text-xs">Home</span>
               </Link>
             </TabsTrigger>
-            <TabsTrigger value="/profile" asChild>
+            <TabsTrigger value="/transaction" asChild>
               <Link
-                href="/profile"
+                href="/transaction"
                 className="flex flex-col items-center py-2 data-[state=active]:text-primary"
               >
-                <User size={24} />
-                <span className="text-xs">Profile</span>
+                <History size={24} />
+                <span className="text-xs">Transactions</span>
               </Link>
             </TabsTrigger>
             <TabsTrigger value="/settings" asChild>

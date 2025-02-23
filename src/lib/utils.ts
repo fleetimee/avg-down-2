@@ -25,27 +25,37 @@ export function formatJakartaTime(
 }
 
 export function formatPrice(price: number) {
-  return new Intl.NumberFormat("id-ID", {
+  const absPrice = Math.abs(price);
+  const formatted = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price);
+    minimumFractionDigits: absPrice < 1 ? 4 : 0,
+    maximumFractionDigits: absPrice < 1 ? 4 : 0,
+  }).format(absPrice);
+
+  return price < 0 ? `-${formatted}` : formatted;
 }
 
 export function formatCompactPrice(price: number | null) {
   if (!price) return "0";
-  return new Intl.NumberFormat("id-ID", {
+  const absPrice = Math.abs(price);
+  const formatted = new Intl.NumberFormat("id-ID", {
     notation: "compact",
-    maximumFractionDigits: 1,
+    minimumFractionDigits: absPrice < 1 ? 4 : 1,
+    maximumFractionDigits: absPrice < 1 ? 4 : 1,
     compactDisplay: "short",
-  }).format(price);
+  }).format(absPrice);
+
+  return price < 0 ? `-${formatted}` : formatted;
 }
 
 export function formatNonCompactPrice(price: number | null) {
-  if (!price) return "0.00";
-  return price.toLocaleString("id-ID", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+  if (!price) return "0.0000";
+  const absPrice = Math.abs(price);
+  const formatted = absPrice.toLocaleString("id-ID", {
+    minimumFractionDigits: absPrice < 1 ? 4 : 2,
+    maximumFractionDigits: absPrice < 1 ? 4 : 2,
   });
+
+  return price < 0 ? `-${formatted}` : formatted;
 }

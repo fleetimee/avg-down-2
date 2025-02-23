@@ -124,3 +124,17 @@ export async function getBucketById(
     coinDetails,
   };
 }
+
+export async function deleteBucketById(
+  bucketId: string,
+  userId: string
+): Promise<boolean> {
+  const result = await db.query(
+    `DELETE FROM buckets 
+    WHERE id = $1 AND user_id = $2 
+    RETURNING id`,
+    [bucketId, userId]
+  );
+
+  return (result.rowCount ?? 0) > 0;
+}

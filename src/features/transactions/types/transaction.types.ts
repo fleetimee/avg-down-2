@@ -8,4 +8,5 @@ export interface Transaction {
   transaction_date: Date;
   created_at: Date;
   coin_symbol: string;
+  is_sale: boolean;
 }
