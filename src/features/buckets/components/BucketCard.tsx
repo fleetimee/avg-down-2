@@ -41,14 +41,14 @@ export function BucketCard({ bucket }: BucketCardProps) {
         <div className="flex justify-between items-start w-full">
           <div className="text-left w-1/2">
             <p className="text-sm text-gray-500">Quantity</p>
-            <p className="text-lg font-semibold">
+            <p className="text-base font-semibold">
               {bucket.bucket.total_quantity}
             </p>
           </div>
 
           <div className="text-left w-1/2">
             <p className="text-sm text-gray-500">Average Cost</p>
-            <p className="text-lg font-semibold">
+            <p className="text-base font-semibold">
               Rp {bucket.bucket.average_price}
             </p>
           </div>
@@ -69,7 +69,7 @@ export function BucketCard({ bucket }: BucketCardProps) {
 
               <div className="text-left w-1/2">
                 <p className="text-sm text-gray-500">Total Value</p>
-                <p className="text-lg font-semibold">
+                <p className="text-base font-semibold">
                   Rp {currentValue.toLocaleString("id-ID")}
                 </p>
               </div>

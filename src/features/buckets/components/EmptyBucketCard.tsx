@@ -15,7 +15,7 @@ export function EmptyBucketCard() {
       </CardHeader>
       <CardContent>
         <Button asChild>
-          <Link href="/bucket-main" className="gap-2">
+          <Link href="/bucket-main/new" className="gap-2">
             <Plus className="w-4 h-4" />
             Create First Bucket
           </Link>

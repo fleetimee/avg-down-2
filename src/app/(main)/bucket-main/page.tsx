@@ -1,9 +1,12 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { auth } from "../../../../auth";
 import { getAllUserBuckets } from "@/features/buckets/services/bucket.service";
 import { BucketCard } from "@/features/buckets/components/BucketCard";
 import { EmptyBucketCard } from "@/features/buckets/components/EmptyBucketCard";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,7 +14,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Home, LayoutGrid } from "lucide-react";
+import { Home, LayoutGrid, Plus, AlertCircle } from "lucide-react";
 
 export default async function BucketMain() {
   const session = await auth.api.getSession({
@@ -48,23 +51,47 @@ export default async function BucketMain() {
       </Breadcrumb>
 
       <div>
-        <h1 className="text-2xl font-bold mb-2">Your Investment Buckets</h1>
-        <p className="text-sm text-muted-foreground">
-          Manage and track all your investment buckets
-        </p>
-      </div>
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">Add Bucket</h2>
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Create a new bucket to track your investments in a specific
+              cryptocurrency.
+            </AlertDescription>
+          </Alert>
+          <Button asChild className="w-full mt-4" variant="neutral">
+            <Link
+              href="/bucket-main/new"
+              className="flex items-center gap-2 justify-center"
+            >
+              <Plus className="h-4 w-4" />
+              Create New Bucket
+            </Link>
+          </Button>
+        </div>
 
-      {buckets.length > 0 ? (
-        <div className="flex flex-col gap-4">
-          {buckets.map((bucket) => (
-            <BucketCard key={bucket.bucket.id} bucket={bucket} />
-          ))}
+        <div>
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            My Buckets
+            <span className="text-sm text-muted-foreground font-normal">
+              ({buckets.length})
+            </span>
+          </h2>
+
+          {buckets.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {buckets.map((bucket) => (
+                <BucketCard key={bucket.bucket.id} bucket={bucket} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+              <EmptyBucketCard />
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-          <EmptyBucketCard />
-        </div>
-      )}
+      </div>
     </div>
   );
 }

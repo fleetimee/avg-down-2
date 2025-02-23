@@ -23,16 +23,15 @@ export function CoinPriceDisplay({
 
   return (
     <div className={cn("flex flex-col text-left", className)}>
-      <p className="text-sm text-gray-500">
-        {variant === "current" ? "Current Price" : "Average Cost"}
-      </p>
-      <div className="flex items-baseline gap-2">
-        <p className="text-lg font-semibold">Rp {formattedPrice}</p>
+      <div className="flex items-center gap-2">
+        <p className="text-sm text-gray-500">
+          {variant === "current" ? "Current Price" : "Average Cost"}
+        </p>
         {variant === "current" && priceChange !== undefined && (
           <span
             className={cn(
-              "text-sm font-semibold",
-              priceChange >= 0 ? "text-green-500" : "text-red-500"
+              "text-xs font-semibold",
+              priceChange >= 0 ? "text-greenHulk" : "text-red-500"
             )}
           >
             {priceChange >= 0 ? "+" : ""}
@@ -40,6 +39,7 @@ export function CoinPriceDisplay({
           </span>
         )}
       </div>
+      <p className="text-base font-semibold">Rp {formattedPrice}</p>
     </div>
   );
 }

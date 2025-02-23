@@ -19,7 +19,7 @@ export function AddTransactionButton({ className }: AddTransactionButtonProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className={className} size="lg">
+        <Button className={className} size="lg" variant="neutral">
           <Plus className="mr-2 h-4 w-4" />
           Add Transaction
         </Button>
