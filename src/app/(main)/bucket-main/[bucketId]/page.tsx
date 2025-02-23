@@ -29,8 +29,17 @@ import {
   Info,
   LineChart,
   FileText,
+  MoreVertical,
+  Trash2,
+  ListIcon,
 } from "lucide-react";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PageProps {
   params: Promise<{
@@ -89,24 +98,44 @@ export default async function BucketDetailsPage(props: PageProps) {
 
       {/* Enhanced Banner Section */}
       <div className="bg-card rounded-lg p-6 shadow-lg">
-        <div className="flex items-center gap-6 mb-6">
-          {coinDetails?.image && (
-            <Image
-              src={coinDetails.image.large}
-              alt={coinDetails.name}
-              width={48}
-              height={48}
-              className="rounded-full"
-            />
-          )}
-          <div>
-            <h1 className="text-xl font-semibold mb-1">
-              {coinDetails?.name || bucket.coin_symbol.toUpperCase()}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Created {formatJakartaTime(bucket.created_at)}
-            </p>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-6">
+            {coinDetails?.image && (
+              <Image
+                src={coinDetails.image.large}
+                alt={coinDetails.name}
+                width={48}
+                height={48}
+                className="rounded-full"
+              />
+            )}
+            <div>
+              <h1 className="text-xl font-semibold mb-1">
+                {coinDetails?.name || bucket.coin_symbol.toUpperCase()}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Created {formatJakartaTime(bucket.created_at)}
+              </p>
+            </div>
           </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="p-2 hover:bg-muted rounded-full">
+                <MoreVertical className="h-5 w-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem className="flex items-center gap-2">
+                <ListIcon className="h-4 w-4" />
+                View Transactions
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2 text-destructive">
+                <Trash2 className="h-4 w-4" />
+                Delete Bucket
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="flex flex-col gap-4">
