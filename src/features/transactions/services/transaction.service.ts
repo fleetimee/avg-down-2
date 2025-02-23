@@ -23,7 +23,7 @@ export async function getLatestUserTransaction(
 
 export async function getRecentUserTransactions(
   userId: string,
-  page: number = 1,
+  page: number = 10,
   limit: number = 1,
   coinSymbol?: string
 ): Promise<{ transactions: Transaction[]; total: number }> {
