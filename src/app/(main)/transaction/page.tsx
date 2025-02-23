@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/pagination";
 import { Fragment } from "react";
 
-const ITEMS_PER_PAGE = 1;
+const ITEMS_PER_PAGE = 10;
 
 interface TransactionPageProps {
   searchParams: Promise<{ coin?: string; page?: string }>;
@@ -87,7 +87,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-4 pb-20">
+    <div className="flex flex-col gap-6 p-4 pb-32 relative min-h-screen">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -145,7 +145,13 @@ export default async function TransactionPage(props: TransactionPageProps) {
 
       {enrichedTransactions.length > 0 ? (
         <>
-          <TransactionList transactions={enrichedTransactions} />
+          <TransactionList
+            transactions={enrichedTransactions}
+            currentPage={currentPage}
+            totalItems={total}
+            itemsPerPage={ITEMS_PER_PAGE}
+            showPagination={true}
+          />
           {totalPages > 1 && (
             <Pagination className="mt-8">
               <PaginationContent>

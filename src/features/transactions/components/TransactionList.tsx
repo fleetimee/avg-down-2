@@ -7,11 +7,29 @@ import Image from "next/image";
 
 interface TransactionListProps {
   transactions: Array<Transaction & { coinDetails: CoinGeckoResponse | null }>;
+  currentPage?: number;
+  totalItems?: number;
+  itemsPerPage?: number;
+  showPagination?: boolean;
 }
 
-export function TransactionList({ transactions }: TransactionListProps) {
+export function TransactionList({
+  transactions,
+  currentPage,
+  totalItems,
+  itemsPerPage,
+  showPagination = false,
+}: TransactionListProps) {
   return (
     <div className="flex flex-col gap-4">
+      {showPagination && currentPage && totalItems && itemsPerPage && (
+        <div className="text-sm text-muted-foreground mb-2">
+          Showing {(currentPage - 1) * itemsPerPage + 1}-
+          {Math.min(currentPage * itemsPerPage, totalItems)} from {totalItems}{" "}
+          transactions
+        </div>
+      )}
+
       {transactions.map((transaction) => (
         <Alert
           key={transaction.id}

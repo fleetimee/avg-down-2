@@ -103,7 +103,10 @@ export default async function Home() {
         </div>
       </div>
       {transactions.length > 0 ? (
-        <TransactionList transactions={enrichedTransactions} />
+        <TransactionList
+          transactions={enrichedTransactions}
+          showPagination={false}
+        />
       ) : (
         <EmptyTransactionCard />
       )}
