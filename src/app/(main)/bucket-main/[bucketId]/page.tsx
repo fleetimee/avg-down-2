@@ -17,7 +17,16 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Home, LayoutGrid, ArrowUpDown } from "lucide-react";
+import {
+  Home,
+  LayoutGrid,
+  ArrowUpDown,
+  CoinsIcon,
+  Calculator,
+  DollarSign,
+  Wallet,
+  TrendingUp,
+} from "lucide-react";
 import Image from "next/image";
 
 interface PageProps {
@@ -82,13 +91,13 @@ export default async function BucketDetailsPage(props: PageProps) {
             <Image
               src={coinDetails.image.large}
               alt={coinDetails.name}
-              width={64}
-              height={64}
+              width={48}
+              height={48}
               className="rounded-full"
             />
           )}
           <div>
-            <h1 className="text-2xl font-bold mb-1">
+            <h1 className="text-xl font-semibold mb-1">
               {coinDetails?.name || bucket.coin_symbol.toUpperCase()}
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -100,12 +109,18 @@ export default async function BucketDetailsPage(props: PageProps) {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-start">
             <div className="text-left w-1/2">
-              <p className="text-sm text-muted-foreground">Quantity</p>
-              <p className=" font-semibold">{bucket.total_quantity ?? 0}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <CoinsIcon className="h-4 w-4 text-muted-foreground" />
+                <p className="text-xs font-extralight">Quantity</p>
+              </div>
+              <p className="font-semibold">{bucket.total_quantity ?? 0}</p>
             </div>
             <div className="text-left w-1/2">
-              <p className="text-sm text-muted-foreground">Average Cost</p>
-              <p className=" font-semibold">
+              <div className="flex items-center gap-2 mb-1">
+                <Calculator className="h-4 w-4 text-muted-foreground" />
+                <p className="text-xs font-extralight">Average Cost</p>
+              </div>
+              <p className="font-semibold">
                 {formatPrice(bucket.average_price || 0)}
               </p>
             </div>
@@ -113,24 +128,35 @@ export default async function BucketDetailsPage(props: PageProps) {
 
           <div className="flex justify-between items-start">
             <div className="text-left w-1/2">
-              <p className="text-sm text-muted-foreground">Total Cost</p>
-              <p className=" font-semibold">
+              <div className="flex items-center gap-2 mb-1">
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <p className="text-xs font-extralight">Total Cost</p>
+              </div>
+              <p className="font-semibold">
                 {formatPrice(bucket.total_cost || 0)}
               </p>
             </div>
             <div className="text-left w-1/2">
-              <p className="text-sm text-muted-foreground">Current Value</p>
+              <div className="flex items-center gap-2 mb-1">
+                <Wallet className="h-4 w-4 text-muted-foreground" />
+                <p className="text-xs font-extralight">Current Value</p>
+              </div>
               <p className="font-semibold">{formatPrice(currentValue)}</p>
             </div>
           </div>
 
           {/* PNL Section */}
           <div className="mt-4 pt-4 border-t border-border">
-            <div className="flex flex-col items-center justify-center">
-              <p className="text-sm text-muted-foreground">Profit/Loss</p>
+            <div className="flex flex-col items-center justify-center bg-muted/50 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingUp className="h-5 w-5 text-muted-foreground" />
+                <p className="text-sm font-medium uppercase tracking-wide">
+                  Profit/Loss
+                </p>
+              </div>
               <div className="flex items-center gap-2">
                 <p
-                  className={`text-xl font-bold ${
+                  className={`text-2xl font-bold ${
                     currentValue - (bucket.total_cost || 0) >= 0
                       ? "text-greenHulk"
                       : "text-red-500"
@@ -165,7 +191,7 @@ export default async function BucketDetailsPage(props: PageProps) {
         <div className="grid grid-cols-2 gap-4 max-w-2xl">
           <Card>
             <CardContent className="pt-6">
-              <h2 className="text-lg font-semibold mb-4">Price Information</h2>
+              <h2 className="text-lg font-semibold mb-4">Information</h2>
               <div className="flex flex-col gap-4">
                 <div>
                   <CoinPriceDisplay
