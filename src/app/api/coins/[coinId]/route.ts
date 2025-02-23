@@ -3,10 +3,8 @@ import { NextResponse } from "next/server";
 const COINGECKO_API_URL = "https://api.coingecko.com/api/v3";
 const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY;
 
-export async function GET(
-  request: Request,
-  { params }: { params: { coinId: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ coinId: string }> }) {
+  const params = await props.params;
   const coinId = params.coinId;
 
   if (!coinId || !isValidCoinId(coinId)) {
