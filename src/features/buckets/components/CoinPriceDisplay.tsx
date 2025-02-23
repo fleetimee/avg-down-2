@@ -1,10 +1,12 @@
 import { cn } from "@/lib/utils";
+import { formatCompactPrice, formatNonCompactPrice } from "@/lib/utils";
 
 interface CoinPriceDisplayProps {
   price: number;
   variant?: "current" | "average";
   priceChange?: number;
   className?: string;
+  compact?: boolean;
 }
 
 export function CoinPriceDisplay({
@@ -12,14 +14,12 @@ export function CoinPriceDisplay({
   variant = "current",
   priceChange,
   className,
+  compact = true,
 }: CoinPriceDisplayProps) {
   const formattedPrice =
-    variant === "average"
-      ? Math.round(price).toLocaleString("id-ID")
-      : price.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
+    variant === "current" || !compact
+      ? formatNonCompactPrice(price)
+      : formatCompactPrice(price);
 
   return (
     <div className={cn("flex flex-col text-left", className)}>

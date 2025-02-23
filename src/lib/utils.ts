@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function toJakartaTime(utcDate: Date | string) {
   const date = new Date(utcDate);
   // Add 7 hours to convert UTC to Jakarta time (UTC+7)
-  return new Date(date.getTime() + (7 * 60 * 60 * 1000));
+  return new Date(date.getTime() + 7 * 60 * 60 * 1000);
 }
 
 export function formatJakartaTime(
@@ -31,4 +31,19 @@ export function formatPrice(price: number) {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(price);
+}
+
+export function formatCompactPrice(price: number) {
+  return new Intl.NumberFormat("id-ID", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+    compactDisplay: "short",
+  }).format(price);
+}
+
+export function formatNonCompactPrice(price: number) {
+  return price.toLocaleString("id-ID", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
