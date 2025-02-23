@@ -92,3 +92,35 @@ export async function createBucket(
     coinDetails,
   };
 }
+
+export async function getBucketById(
+  bucketId: string,
+  userId: string
+): Promise<EnrichedBucket | null> {
+  const result = await db.query<Bucket>(
+    `SELECT 
+      id,
+      user_id,
+      coin_symbol,
+      total_quantity::numeric,
+      total_cost::numeric,
+      average_price::numeric,
+      created_at,
+      updated_at
+    FROM buckets 
+    WHERE id = $1 AND user_id = $2`,
+    [bucketId, userId]
+  );
+
+  if (!result.rows[0]) {
+    return null;
+  }
+
+  const bucket = result.rows[0];
+  const coinDetails = await getCoinDetails(bucket.coin_symbol.toLowerCase());
+
+  return {
+    bucket,
+    coinDetails,
+  };
+}
