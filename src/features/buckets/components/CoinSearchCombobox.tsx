@@ -35,6 +35,8 @@ export function CoinSearchCombobox({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [coins, setCoins] = React.useState<CoinSearchResult[]>([]);
+  const [selectedCoinInfo, setSelectedCoinInfo] =
+    React.useState<CoinSearchResult | null>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   React.useEffect(() => {
@@ -58,10 +60,19 @@ export function CoinSearchCombobox({
     fetchCoins();
   }, [debouncedSearch]);
 
-  const selectedCoin = React.useMemo(
-    () => coins.find((coin) => coin.symbol === value?.toLowerCase()),
-    [coins, value]
-  );
+  // When value changes externally, try to fetch coin info
+  React.useEffect(() => {
+    if (value && !selectedCoinInfo) {
+      searchCoins(value).then((results) => {
+        const coin = results.find(
+          (c) => c.symbol.toLowerCase() === value.toLowerCase()
+        );
+        if (coin) {
+          setSelectedCoinInfo(coin);
+        }
+      });
+    }
+  }, [value, selectedCoinInfo]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -72,18 +83,18 @@ export function CoinSearchCombobox({
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {selectedCoin ? (
+          {selectedCoinInfo ? (
             <div className="flex items-center gap-2">
               <Image
-                src={selectedCoin.thumb}
-                alt={selectedCoin.name}
+                src={selectedCoinInfo.thumb}
+                alt={selectedCoinInfo.name}
                 width={16}
                 height={16}
                 className="w-4 h-4"
               />
-              <span>{selectedCoin.name}</span>
+              <span>{selectedCoinInfo.name}</span>
               <span className="text-muted-foreground">
-                ({selectedCoin.symbol.toUpperCase()})
+                ({selectedCoinInfo.symbol.toUpperCase()})
               </span>
             </div>
           ) : (
@@ -113,9 +124,10 @@ export function CoinSearchCombobox({
               {coins.map((coin) => (
                 <CommandItem
                   key={coin.id}
-                  value={coin.symbol}
+                  value={coin.name}
                   onSelect={(currentValue) => {
-                    onSelect(currentValue);
+                    setSelectedCoinInfo(coin);
+                    onSelect(currentValue.toLowerCase());
                     setOpen(false);
                   }}
                 >
@@ -135,7 +147,9 @@ export function CoinSearchCombobox({
                   <Check
                     className={cn(
                       "ml-auto h-4 w-4",
-                      value === coin.symbol ? "opacity-100" : "opacity-0"
+                      value === coin.symbol.toLowerCase()
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>

@@ -21,7 +21,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CoinSearchCombobox } from "./CoinSearchCombobox";
 
 const formSchema = z.object({
-  coin_symbol: z.string().min(1, "Coin symbol is required").toLowerCase(),
+  coin_symbol: z.string().min(1, "Please select a cryptocurrency"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -81,7 +81,7 @@ export function CreateBucketForm() {
               <FormControl>
                 <CoinSearchCombobox
                   value={field.value}
-                  onSelect={(value) => field.onChange(value)}
+                  onSelect={field.onChange}
                 />
               </FormControl>
               <FormMessage />
