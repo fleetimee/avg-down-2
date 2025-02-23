@@ -19,6 +19,7 @@ export interface CoinGeckoResponse {
   id: string;
   symbol: string;
   name: string;
+  market_cap_rank: number;
   description: {
     en: string;
   };
