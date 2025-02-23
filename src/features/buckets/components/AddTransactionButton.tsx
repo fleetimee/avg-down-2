@@ -1,29 +1,22 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 interface AddTransactionButtonProps {
-  className?: string;
   bucketId: string;
+  className?: string;
 }
 
 export function AddTransactionButton({
-  className,
   bucketId,
+  className,
 }: AddTransactionButtonProps) {
-  const router = useRouter();
-
   return (
-    <Button
-      className={className}
-      size="lg"
-      variant="neutral"
-      onClick={() => router.push(`/transaction/${bucketId}/newTransaction`)}
-    >
-      <Plus className="mr-2 h-4 w-4" />
-      Add Transaction
+    <Button asChild className={className} variant="neutral">
+      <Link href={`/transaction/${bucketId}/newTransaction`}>
+        Add Transaction
+      </Link>
     </Button>
   );
 }
