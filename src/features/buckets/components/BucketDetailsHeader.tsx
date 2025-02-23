@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { MoreVertical, ListIcon, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,6 +26,11 @@ export function BucketDetailsHeader({
   bucketId,
 }: BucketDetailsHeaderProps) {
   const [isDeleteDrawerOpen, setIsDeleteDrawerOpen] = useState(false);
+  const router = useRouter();
+
+  const handleViewTransactions = () => {
+    router.push(`/transaction?coin=${coinDetails.symbol.toLowerCase()}`);
+  };
 
   return (
     <>
@@ -54,7 +60,10 @@ export function BucketDetailsHeader({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="flex items-center gap-2">
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={handleViewTransactions}
+            >
               <ListIcon className="h-4 w-4" />
               View Transactions
             </DropdownMenuItem>
