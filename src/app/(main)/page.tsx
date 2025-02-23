@@ -85,7 +85,7 @@ export default async function Home() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Coins className="w-5 h-5" />
-          <h2 className="text-2xl font-semibold">Latest Bucket</h2>
+          <h2 className="text-lg font-semibold">Latest Bucket</h2>
         </div>
         <AddBucketButton />
       </div>
@@ -98,7 +98,7 @@ export default async function Home() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <History className="w-5 h-5" />
-          <h2 className="text-2xl font-semibold">Recent Transactions</h2>
+          <h2 className="text-lg font-semibold">Recent Transactions</h2>
         </div>
       </div>
       {recentTransactions.length > 0 ? (
