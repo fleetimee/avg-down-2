@@ -26,6 +26,9 @@ import {
   DollarSign,
   Wallet,
   TrendingUp,
+  Info,
+  LineChart,
+  FileText,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -191,7 +194,10 @@ export default async function BucketDetailsPage(props: PageProps) {
         <div className="grid grid-cols-2 gap-4 max-w-2xl">
           <Card>
             <CardContent className="pt-6">
-              <h2 className="text-lg font-semibold mb-4">Information</h2>
+              <div className="flex items-center gap-2 mb-4">
+                <Info className="h-5 w-5 text-muted-foreground" />
+                <h2 className="text-lg font-semibold">Information</h2>
+              </div>
               <div className="flex flex-col gap-4">
                 <div>
                   <CoinPriceDisplay
@@ -228,7 +234,10 @@ export default async function BucketDetailsPage(props: PageProps) {
 
           <Card>
             <CardContent className="pt-6">
-              <h2 className="text-lg font-semibold mb-4">Price Changes</h2>
+              <div className="flex items-center gap-2 mb-4">
+                <LineChart className="h-5 w-5 text-muted-foreground" />
+                <h2 className="text-lg font-semibold">Prices</h2>
+              </div>
               <div className="flex flex-col gap-4">
                 {[
                   {
@@ -269,9 +278,12 @@ export default async function BucketDetailsPage(props: PageProps) {
         <div className="max-w-2xl">
           <Card>
             <CardContent className="pt-6">
-              <h2 className="text-lg font-semibold mb-4">
-                About {coinDetails.name}
-              </h2>
+              <div className="flex items-center gap-2 mb-4">
+                <FileText className="h-5 w-5 text-muted-foreground" />
+                <h2 className="text-lg font-semibold">
+                  About {coinDetails.name}
+                </h2>
+              </div>
               <div
                 className="text-sm text-muted-foreground prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: coinDetails.description.en }}
