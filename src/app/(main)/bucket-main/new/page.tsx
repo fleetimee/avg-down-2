@@ -6,7 +6,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { CreateBucketForm } from "@/features/buckets/components/CreateBucketForm";
-import { Home, LayoutGrid } from "lucide-react";
+import { Home, LayoutGrid, FolderPlus } from "lucide-react";
 
 export default function BucketNewPage() {
   return (
@@ -31,13 +31,22 @@ export default function BucketNewPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/bucket-main/new">New Bucket</BreadcrumbLink>
+            <BreadcrumbLink
+              href="/bucket-main/new"
+              className="flex items-center gap-2"
+            >
+              <FolderPlus className="h-4 w-4" />
+              Create New Bucket
+            </BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
       <div>
-        <h2 className="text-lg font-semibold mb-6">Create New Bucket</h2>
+        <div className="flex items-center gap-2 mb-6">
+          <FolderPlus className="h-5 w-5" />
+          <h2 className="text-lg font-semibold">Create New Bucket</h2>
+        </div>
         <div className="max-w-lg">
           <CreateBucketForm />
         </div>

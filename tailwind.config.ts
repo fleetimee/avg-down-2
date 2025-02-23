@@ -23,6 +23,7 @@ export default {
         ringOffset: "var(--ring-offset)",
 
         secondaryBlack: "#212121",
+        greenHulk: "#4CAF50",
       },
       borderRadius: {
         base: "5px",

@@ -18,7 +18,7 @@ import { createBucketAction } from "../actions/create-bucket.action";
 import { useState, useTransition } from "react";
 import { useToast } from "@/hooks/use-toast";
 import * as z from "zod";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Coins } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
@@ -74,7 +74,10 @@ export function CreateBucketForm() {
           name="coin_symbol"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Coin Symbol</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <Coins className="h-4 w-4" />
+                Coin Symbol
+              </FormLabel>
               <FormControl>
                 <Input 
                   placeholder="btc" 

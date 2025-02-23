@@ -14,7 +14,14 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Home, LayoutGrid, Plus, AlertCircle } from "lucide-react";
+import {
+  Home,
+  LayoutGrid,
+  Plus,
+  AlertCircle,
+  FolderPlus,
+  Briefcase,
+} from "lucide-react";
 
 export default async function BucketMain() {
   const session = await auth.api.getSession({
@@ -52,7 +59,10 @@ export default async function BucketMain() {
 
       <div>
         <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4">Add Bucket</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <FolderPlus className="h-5 w-5" />
+            <h2 className="text-lg font-semibold">Add Bucket</h2>
+          </div>
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
@@ -72,12 +82,13 @@ export default async function BucketMain() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            My Buckets
-            <span className="text-sm text-muted-foreground font-normal">
+          <div className="flex items-center gap-2 mb-4">
+            <Briefcase className="h-5 w-5" />
+            <h2 className="text-lg font-semibold">My Buckets</h2>
+            <span className="text-sm text-muted-foreground">
               ({buckets.length})
             </span>
-          </h2>
+          </div>
 
           {buckets.length > 0 ? (
             <div className="flex flex-col gap-4">
