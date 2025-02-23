@@ -54,7 +54,9 @@ export default async function BucketDetailsPage(props: PageProps) {
       </div>
 
       {coinDetails.market_data && (
-        <BucketMarketData coinDetails={coinDetails} />
+        <div className="grid grid-cols-2 gap-4 max-w-2xl">
+          <BucketMarketData coinDetails={coinDetails} />
+        </div>
       )}
 
       {coinDetails.description?.en && (

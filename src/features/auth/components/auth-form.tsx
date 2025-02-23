@@ -38,11 +38,11 @@ export function AuthForm({ mode }: AuthFormProps) {
       <CardContent className="pb-16 px-6 sm:px-10">
         <Form {...form}>
           <form onSubmit={onSubmit} className="flex flex-col">
-            <div className="space-y-8 mb-24">
+            <div className="space-y-8 mb-6">
               <AuthFormFields mode={mode} form={form} isLoading={isLoading} />
             </div>
 
-            <div className="pt-6 space-y-10">
+            <div className=" space-y-10">
               <div className="space-y-6">
                 <Button
                   type="submit"
@@ -63,9 +63,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                 <GithubButton />
               </div>
 
-              <br />
-
-              <div className="text-center text-sm pt-8">
+              <div className="text-center text-sm pt-2">
                 {mode === "signin" ? (
                   <p>
                     Don&apos;t have an account?{" "}

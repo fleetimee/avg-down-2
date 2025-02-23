@@ -12,7 +12,7 @@ export function BucketMarketData({ coinDetails }: BucketMarketDataProps) {
   const { market_data } = coinDetails;
 
   return (
-    <div className="grid grid-cols-2 gap-4 max-w-2xl">
+    <>
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-center gap-2 mb-4">
@@ -85,6 +85,6 @@ export function BucketMarketData({ coinDetails }: BucketMarketDataProps) {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </>
   );
 }
