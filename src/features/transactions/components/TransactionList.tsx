@@ -1,10 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Transaction } from "../types/transaction.types";
-import {
-  formatJakartaTime,
-  formatNonCompactPrice,
-  formatCompactPrice,
-} from "@/lib/utils";
+import { formatJakartaTime, formatNonCompactPrice } from "@/lib/utils";
 import { Coins } from "lucide-react";
 import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
 
@@ -51,7 +47,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                   Total cost:
                 </span>
                 <span className="text-sm font-medium">
-                  Rp {formatCompactPrice(transaction.total_cost)}
+                  Rp {formatNonCompactPrice(transaction.total_cost)}
                 </span>
               </div>
 

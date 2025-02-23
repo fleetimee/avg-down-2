@@ -21,9 +21,9 @@ export default {
         border: "var(--border)",
         ring: "var(--ring)",
         ringOffset: "var(--ring-offset)",
+        greenHulk: "#4CAF50",
 
         secondaryBlack: "#212121",
-        greenHulk: "#4CAF50",
       },
       borderRadius: {
         base: "5px",
@@ -40,20 +40,6 @@ export default {
       fontWeight: {
         base: "500",
         heading: "700",
-      },
-
-      animation: {
-        spin: "spin 1s linear infinite",
-      },
-      keyframes: {
-        spin: {
-          from: {
-            transform: "rotate(0deg)",
-          },
-          to: {
-            transform: "rotate(360deg)",
-          },
-        },
       },
     },
   },

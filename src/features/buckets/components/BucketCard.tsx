@@ -53,8 +53,8 @@ export function BucketCard({ bucket }: BucketCardProps) {
             <div className="text-left w-1/2">
               <CoinPriceDisplay
                 price={bucket.bucket.average_price}
-                variant="average"
-                compact={true}
+                variant="current"
+                compact={false}
               />
             </div>
           </div>

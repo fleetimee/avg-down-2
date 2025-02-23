@@ -101,13 +101,11 @@ export default async function BucketDetailsPage(props: PageProps) {
           <div className="flex justify-between items-start">
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Quantity</p>
-              <p className="text-xl font-semibold">
-                {bucket.total_quantity ?? 0}
-              </p>
+              <p className=" font-semibold">{bucket.total_quantity ?? 0}</p>
             </div>
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Average Cost</p>
-              <p className="text-xl font-semibold">
+              <p className=" font-semibold">
                 Rp {formatNonCompactPrice(bucket.average_price)}
               </p>
             </div>
@@ -116,14 +114,14 @@ export default async function BucketDetailsPage(props: PageProps) {
           <div className="flex justify-between items-start">
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Total Cost</p>
-              <p className="text-xl font-semibold">
+              <p className=" font-semibold">
                 Rp {formatCompactPrice(bucket.total_cost)}
               </p>
             </div>
             <div className="text-left w-1/2">
               <p className="text-sm text-muted-foreground">Current Value</p>
-              <p className="text-xl font-semibold">
-                Rp {formatCompactPrice(currentValue)}
+              <p className="font-semibold">
+                Rp {formatNonCompactPrice(currentValue)}
               </p>
             </div>
           </div>

@@ -78,13 +78,10 @@ export async function createBucket(
   const result = await db.query<Bucket>(
     `INSERT INTO buckets (
       user_id,
-      coin_symbol,
-      total_quantity,
-      total_cost,
-      average_price
-    ) VALUES ($1, $2, $3, $4, $5)
+      coin_symbol
+    ) VALUES ($1, $2)
     RETURNING *`,
-    [userId, coin_symbol.toLowerCase(), 0, 0, null]
+    [userId, coin_symbol.toLowerCase()]
   );
 
   const bucket = result.rows[0];
