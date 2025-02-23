@@ -11,15 +11,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { createBucketAction } from "../actions/create-bucket.action";
 import { useState, useTransition } from "react";
 import { useToast } from "@/hooks/use-toast";
 import * as z from "zod";
 import { AlertCircle, Coins } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CoinSearchCombobox } from "./CoinSearchCombobox";
 
 const formSchema = z.object({
   coin_symbol: z.string().min(1, "Coin symbol is required").toLowerCase(),
@@ -65,7 +64,8 @@ export function CreateBucketForm() {
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Enter the symbol of the cryptocurrency you want to track (e.g., btc for Bitcoin, eth for Ethereum).
+            Search and select a cryptocurrency to create a new bucket for
+            tracking your investments.
           </AlertDescription>
         </Alert>
 
@@ -76,18 +76,14 @@ export function CreateBucketForm() {
             <FormItem>
               <FormLabel className="flex items-center gap-2">
                 <Coins className="h-4 w-4" />
-                Coin Symbol
+                Select Cryptocurrency
               </FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="btc" 
-                  className="uppercase" 
-                  {...field} 
+                <CoinSearchCombobox
+                  value={field.value}
+                  onSelect={(value) => field.onChange(value)}
                 />
               </FormControl>
-              <FormDescription>
-                The trading symbol for your cryptocurrency (e.g., BTC, ETH, SOL)
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -101,11 +97,7 @@ export function CreateBucketForm() {
         )}
 
         <div className="flex justify-end gap-4 pt-4">
-          <Button 
-            type="button" 
-            variant="default"
-            onClick={() => router.back()}
-          >
+          <Button type="button" variant="default" onClick={() => router.back()}>
             Cancel
           </Button>
           <Button type="submit" disabled={isPending}>

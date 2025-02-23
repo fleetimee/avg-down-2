@@ -31,3 +31,12 @@ export interface EnrichedBucket {
   bucket: Bucket;
   coinDetails: CoinGeckoResponse | null;
 }
+
+export interface CoinSearchResult {
+  id: string;
+  name: string;
+  symbol: string;
+  market_cap_rank: number;
+  thumb: string;
+  large: string;
+}
