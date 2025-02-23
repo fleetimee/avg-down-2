@@ -61,7 +61,7 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="neutral"
+          variant="default"
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
@@ -88,10 +88,17 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
                   className="w-4 h-4"
                 />
               )}
-              {coins.find(
-                (coin) =>
-                  coin.symbol.toLowerCase() === currentCoin.toLowerCase()
-              )?.name || currentCoin.toUpperCase()}
+              <span>
+                {
+                  coins.find(
+                    (coin) =>
+                      coin.symbol.toLowerCase() === currentCoin.toLowerCase()
+                  )?.name
+                }
+              </span>
+              <span className="text-muted-foreground">
+                ({currentCoin.toUpperCase()})
+              </span>
             </div>
           ) : (
             "Filter by coin..."
@@ -99,7 +106,11 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="p-0">
+      <PopoverContent
+        align="start"
+        className="p-0"
+        style={{ width: "var(--radix-popover-trigger-width)" }}
+      >
         <Command>
           <CommandList>
             <CommandInput
@@ -124,7 +135,7 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
                   value={coin.symbol.toLowerCase()}
                   onSelect={() => handleSelect(coin.symbol.toLowerCase())}
                 >
-                  <div className="flex items-center gap-2 w-full">
+                  <div className="flex items-center gap-2">
                     {coin.image && (
                       <Image
                         src={coin.image}
@@ -135,10 +146,13 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
                       />
                     )}
                     <span>{coin.name}</span>
+                    <span className="text-muted-foreground">
+                      ({coin.symbol.toUpperCase()})
+                    </span>
                   </div>
                   <Check
                     className={cn(
-                      "ml-2 h-4 w-4",
+                      "ml-auto h-4 w-4",
                       currentCoin.toLowerCase() === coin.symbol.toLowerCase()
                         ? "opacity-100"
                         : "opacity-0"

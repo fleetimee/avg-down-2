@@ -41,10 +41,11 @@ export default async function TransactionPage(props: TransactionPageProps) {
       acc[bucket.bucket.coin_symbol.toLowerCase()] = {
         symbol: bucket.bucket.coin_symbol,
         name: bucket.coinDetails.name,
+        image: bucket.coinDetails.image.small || bucket.coinDetails.image.thumb
       };
     }
     return acc;
-  }, {} as Record<string, { symbol: string; name: string }>);
+  }, {} as Record<string, { symbol: string; name: string; image?: string }>);
 
   const availableCoins = Object.values(coinDetailsMap);
 
