@@ -39,3 +39,23 @@ export async function getRecentUserTransactions(
 
   return result.rows;
 }
+
+export async function createTransaction(
+  userId: string,
+  bucketId: string,
+  quantity: number,
+  price_per_coin: number
+): Promise<Transaction> {
+  const result = await db.query<Transaction>(
+    `INSERT INTO transactions (
+      user_id,
+      bucket_id,
+      quantity,
+      price_per_coin
+    ) VALUES ($1, $2, $3, $4)
+    RETURNING *`,
+    [userId, bucketId, quantity, price_per_coin]
+  );
+
+  return result.rows[0];
+}

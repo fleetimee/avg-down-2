@@ -75,7 +75,10 @@ export function BucketCard({ bucket }: BucketCardProps) {
               </div>
             </div>
 
-            <AddTransactionButton className="w-full mt-2" />
+            <AddTransactionButton
+              className="w-full mt-2"
+              bucketId={bucket.bucket.id}
+            />
           </div>
         )}
       </CardContent>

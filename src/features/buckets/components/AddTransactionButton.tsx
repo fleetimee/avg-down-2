@@ -2,34 +2,28 @@
 
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { AddTransactionForm } from "./AddTransactionForm";
+import { useRouter } from "next/navigation";
 
 interface AddTransactionButtonProps {
   className?: string;
+  bucketId: string;
 }
 
-export function AddTransactionButton({ className }: AddTransactionButtonProps) {
+export function AddTransactionButton({
+  className,
+  bucketId,
+}: AddTransactionButtonProps) {
+  const router = useRouter();
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button className={className} size="lg" variant="neutral">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Transaction
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Add New Transaction</AlertDialogTitle>
-        </AlertDialogHeader>
-        <AddTransactionForm />
-      </AlertDialogContent>
-    </AlertDialog>
+    <Button
+      className={className}
+      size="lg"
+      variant="neutral"
+      onClick={() => router.push(`/transaction/${bucketId}/newTransaction`)}
+    >
+      <Plus className="mr-2 h-4 w-4" />
+      Add Transaction
+    </Button>
   );
 }
