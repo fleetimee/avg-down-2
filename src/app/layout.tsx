@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Mono, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { TanstackProvider } from "@/providers/tanstack-provider";
 
 const geistSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -27,8 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${dmMono.variable} antialiased`}>
-        {children}
-        <Toaster />
+        <TanstackProvider>
+          {children}
+          <Toaster />
+        </TanstackProvider>
       </body>
     </html>
   );

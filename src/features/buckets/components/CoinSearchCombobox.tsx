@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { CoinSearchResult } from "../types/coingecko.types";
 import { searchCoins } from "../services/coingecko.service";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useQuery } from "@tanstack/react-query";
 
 interface CoinSearchComboboxProps {
   value?: string;
@@ -33,32 +34,17 @@ export function CoinSearchCombobox({
 }: CoinSearchComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [coins, setCoins] = React.useState<CoinSearchResult[]>([]);
-  const [selectedCoinInfo, setSelectedCoinInfo] =
-    React.useState<CoinSearchResult | null>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
 
-  React.useEffect(() => {
-    async function fetchCoins() {
-      if (!debouncedSearch) {
-        setCoins([]);
-        return;
-      }
+  const { data: coins = [], isLoading } = useQuery({
+    queryKey: ["coins", debouncedSearch],
+    queryFn: () => searchCoins(debouncedSearch),
+    enabled: Boolean(debouncedSearch),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
 
-      setIsLoading(true);
-      try {
-        const results = await searchCoins(debouncedSearch);
-        setCoins(results);
-      } catch (error) {
-        console.error("Error fetching coins:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchCoins();
-  }, [debouncedSearch]);
+  const [selectedCoinInfo, setSelectedCoinInfo] =
+    React.useState<CoinSearchResult | null>(null);
 
   // When value changes externally, try to fetch coin info
   React.useEffect(() => {
@@ -130,10 +116,10 @@ export function CoinSearchCombobox({
                 {coins.map((coin) => (
                   <CommandItem
                     key={coin.id}
-                    value={coin.name}
+                    value={coin.api_symbol}
                     onSelect={() => {
                       setSelectedCoinInfo(coin);
-                      onSelect(coin.name.toLowerCase());
+                      onSelect(coin.api_symbol.toLowerCase());
                       setOpen(false);
                     }}
                   >
