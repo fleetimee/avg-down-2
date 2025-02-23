@@ -123,6 +123,38 @@ export default async function BucketDetailsPage(props: PageProps) {
               <p className="font-semibold">{formatPrice(currentValue)}</p>
             </div>
           </div>
+
+          {/* PNL Section */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <div className="flex flex-col items-center justify-center">
+              <p className="text-sm text-muted-foreground">Profit/Loss</p>
+              <div className="flex items-center gap-2">
+                <p
+                  className={`text-xl font-bold ${
+                    currentValue - (bucket.total_cost || 0) >= 0
+                      ? "text-greenHulk"
+                      : "text-red-500"
+                  }`}
+                >
+                  {formatPrice(currentValue - (bucket.total_cost || 0))}
+                </p>
+                <p
+                  className={`text-sm ${
+                    currentValue - (bucket.total_cost || 0) >= 0
+                      ? "text-greenHulk"
+                      : "text-red-500"
+                  }`}
+                >
+                  (
+                  {(
+                    (currentValue / (bucket.total_cost || 1) - 1) *
+                    100
+                  ).toFixed(2)}
+                  %)
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <AddTransactionButton className="w-full mt-6" bucketId={bucket.id} />
