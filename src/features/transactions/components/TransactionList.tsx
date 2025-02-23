@@ -3,6 +3,7 @@ import { Transaction } from "../types/transaction.types";
 import { formatJakartaTime, formatNonCompactPrice } from "@/lib/utils";
 import { Coins } from "lucide-react";
 import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
+import Image from "next/image";
 
 interface TransactionListProps {
   transactions: Array<Transaction & { coinDetails: CoinGeckoResponse | null }>;
@@ -16,7 +17,17 @@ export function TransactionList({ transactions }: TransactionListProps) {
           key={transaction.id}
           className="flex gap-4 bg-main border-2 border-border"
         >
-          <Coins className="h-5 w-5 mt-[2px]" />
+          {transaction.coinDetails?.image?.thumb ? (
+            <Image
+              src={transaction.coinDetails.image.thumb}
+              alt={transaction.coinDetails.name}
+              width={20}
+              height={20}
+              className="h-5 w-5 mt-[2px]"
+            />
+          ) : (
+            <Coins className="h-5 w-5 mt-[2px]" />
+          )}
           <div className="flex-1">
             <AlertTitle className="flex items-center justify-between">
               <span>

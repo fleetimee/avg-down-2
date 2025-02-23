@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface CoinFilterProps {
-  coins: { symbol: string; name: string }[];
+  coins: { symbol: string; name: string; image?: string }[];
 }
 
 export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
@@ -66,14 +67,35 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
           className="w-full justify-between"
           disabled={isLoading}
         >
-          {isLoading
-            ? "Loading..."
-            : currentCoin
-            ? coins.find(
+          {isLoading ? (
+            "Loading..."
+          ) : currentCoin ? (
+            <div className="flex items-center gap-2">
+              {coins.find(
                 (coin) =>
                   coin.symbol.toLowerCase() === currentCoin.toLowerCase()
-              )?.name || currentCoin.toUpperCase()
-            : "Filter by coin..."}
+              )?.image && (
+                <Image
+                  src={
+                    coins.find(
+                      (coin) =>
+                        coin.symbol.toLowerCase() === currentCoin.toLowerCase()
+                    )?.image || ""
+                  }
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="w-4 h-4"
+                />
+              )}
+              {coins.find(
+                (coin) =>
+                  coin.symbol.toLowerCase() === currentCoin.toLowerCase()
+              )?.name || currentCoin.toUpperCase()}
+            </div>
+          ) : (
+            "Filter by coin..."
+          )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -102,15 +124,26 @@ export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
                   value={coin.symbol.toLowerCase()}
                   onSelect={() => handleSelect(coin.symbol.toLowerCase())}
                 >
+                  <div className="flex items-center gap-2 w-full">
+                    {coin.image && (
+                      <Image
+                        src={coin.image}
+                        alt={coin.name}
+                        width={16}
+                        height={16}
+                        className="w-4 h-4"
+                      />
+                    )}
+                    <span>{coin.name}</span>
+                  </div>
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
+                      "ml-2 h-4 w-4",
                       currentCoin.toLowerCase() === coin.symbol.toLowerCase()
                         ? "opacity-100"
                         : "opacity-0"
                     )}
                   />
-                  {coin.name}
                 </CommandItem>
               ))}
             </CommandGroup>

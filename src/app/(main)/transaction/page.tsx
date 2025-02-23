@@ -16,12 +16,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllUserBuckets } from "@/features/buckets/services/bucket.service";
 
 interface TransactionPageProps {
-  searchParams: { coin?: string };
+  searchParams: Promise<{ coin?: string }>;
 }
 
-export default async function TransactionPage({
-  searchParams,
-}: TransactionPageProps) {
+export default async function TransactionPage(props: TransactionPageProps) {
+  const searchParams = await props.searchParams;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -37,7 +36,6 @@ export default async function TransactionPage({
 
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
 
-  // Create a map of coin symbols to their details
   const coinDetailsMap = buckets.reduce((acc, bucket) => {
     if (bucket.coinDetails) {
       acc[bucket.bucket.coin_symbol.toLowerCase()] = {
@@ -48,10 +46,8 @@ export default async function TransactionPage({
     return acc;
   }, {} as Record<string, { symbol: string; name: string }>);
 
-  // Map coins for the combobox
   const availableCoins = Object.values(coinDetailsMap);
 
-  // Enrich transactions with coin details
   const enrichedTransactions = recentTransactions.map((tx) => ({
     ...tx,
     coinDetails:
