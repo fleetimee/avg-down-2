@@ -4,6 +4,7 @@ import { formatJakartaTime, formatNonCompactPrice } from "@/lib/utils";
 import { Coins } from "lucide-react";
 import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 interface TransactionListProps {
   transactions: Array<Transaction & { coinDetails: CoinGeckoResponse | null }>;
@@ -48,10 +49,15 @@ export function TransactionList({
           )}
           <div className="flex-1">
             <AlertTitle className="flex items-center justify-between">
-              <span>
-                {transaction.coinDetails?.name ||
-                  transaction.coin_symbol.toUpperCase()}
-              </span>
+              <div className="flex items-center gap-2">
+                <span>
+                  {transaction.coinDetails?.name ||
+                    transaction.coin_symbol.toUpperCase()}
+                </span>
+                <Badge variant={transaction.is_sale ? "neutral" : "default"}>
+                  {transaction.is_sale ? "Sell" : "Buy"}
+                </Badge>
+              </div>
               <span className="text-sm font-normal">
                 {formatJakartaTime(transaction.transaction_date)}
               </span>
