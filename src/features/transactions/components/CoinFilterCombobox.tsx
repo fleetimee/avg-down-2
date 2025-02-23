@@ -22,7 +22,7 @@ interface CoinFilterProps {
   coins: { symbol: string; name: string }[];
 }
 
-export function CoinFilterCombobox({ coins }: CoinFilterProps) {
+export function CoinFilterCombobox({ coins = [] }: CoinFilterProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -41,7 +41,6 @@ export function CoinFilterCombobox({ coins }: CoinFilterProps) {
     }
     router.push(`${pathname}?${params.toString()}`);
     setOpen(false);
-    // Reset loading after navigation
     setTimeout(() => setIsLoading(false), 300);
   };
 
@@ -58,50 +57,44 @@ export function CoinFilterCombobox({ coins }: CoinFilterProps) {
           {isLoading ? (
             "Loading..."
           ) : currentCoin ? (
-            coins.find((coin) => coin.symbol.toLowerCase() === currentCoin.toLowerCase())?.name
+            coins.find((coin) => coin.symbol.toLowerCase() === currentCoin.toLowerCase())?.name || currentCoin.toUpperCase()
           ) : (
             "Filter by coin..."
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-full p-0" align="start">
         <Command>
           <CommandInput placeholder="Search coin..." />
           <CommandEmpty>No coin found.</CommandEmpty>
           <CommandGroup>
-            {isLoading ? (
-              <CommandItem disabled>Loading coins...</CommandItem>
-            ) : (
-              <>
-                <CommandItem onSelect={() => handleSelect("")}>
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      !currentCoin ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  All coins
-                </CommandItem>
-                {coins.map((coin) => (
-                  <CommandItem
-                    key={coin.symbol}
-                    value={coin.symbol}
-                    onSelect={() => handleSelect(coin.symbol)}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        currentCoin.toLowerCase() === coin.symbol.toLowerCase()
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
-                    />
-                    {coin.name}
-                  </CommandItem>
-                ))}
-              </>
-            )}
+            <CommandItem value="" onSelect={() => handleSelect("")}>
+              <Check
+                className={cn(
+                  "mr-2 h-4 w-4",
+                  !currentCoin ? "opacity-100" : "opacity-0"
+                )}
+              />
+              All coins
+            </CommandItem>
+            {coins.map((coin) => (
+              <CommandItem
+                key={coin.symbol}
+                value={coin.symbol.toLowerCase()}
+                onSelect={() => handleSelect(coin.symbol)}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    currentCoin.toLowerCase() === coin.symbol.toLowerCase()
+                      ? "opacity-100"
+                      : "opacity-0"
+                  )}
+                />
+                {coin.name}
+              </CommandItem>
+            ))}
           </CommandGroup>
         </Command>
       </PopoverContent>
