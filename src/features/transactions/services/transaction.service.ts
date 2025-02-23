@@ -23,9 +23,25 @@ export async function getLatestUserTransaction(
 
 export async function getRecentUserTransactions(
   userId: string,
-  limit: number = 5,
+  page: number = 1,
+  limit: number = 1,
   coinSymbol?: string
-): Promise<Transaction[]> {
+): Promise<{ transactions: Transaction[]; total: number }> {
+  const offset = (page - 1) * limit;
+
+  // Get total count
+  const countQuery = `
+    SELECT COUNT(*) as total
+    FROM transactions t
+    JOIN buckets b ON t.bucket_id = b.id
+    WHERE t.user_id = $1
+    ${coinSymbol ? "AND LOWER(b.coin_symbol) = LOWER($2)" : ""}
+  `;
+
+  const countParams = coinSymbol ? [userId, coinSymbol] : [userId];
+  const totalCount = await db.query(countQuery, countParams);
+
+  // Get paginated transactions
   const query = `
     SELECT 
       t.*,
@@ -34,15 +50,21 @@ export async function getRecentUserTransactions(
     FROM transactions t
     JOIN buckets b ON t.bucket_id = b.id
     WHERE t.user_id = $1
-    ${coinSymbol ? "AND LOWER(b.coin_symbol) = LOWER($3)" : ""}
+    ${coinSymbol ? "AND LOWER(b.coin_symbol) = LOWER($4)" : ""}
     ORDER BY t.transaction_date DESC
-    LIMIT $2
+    LIMIT $2 OFFSET $3
   `;
 
-  const params = coinSymbol ? [userId, limit, coinSymbol] : [userId, limit];
+  const params = coinSymbol
+    ? [userId, limit, offset, coinSymbol]
+    : [userId, limit, offset];
 
   const result = await db.query<Transaction>(query, params);
-  return result.rows;
+
+  return {
+    transactions: result.rows,
+    total: parseInt(totalCount.rows[0].total),
+  };
 }
 
 export async function createTransaction(

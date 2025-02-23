@@ -14,9 +14,21 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllUserBuckets } from "@/features/buckets/services/bucket.service";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { Fragment } from "react";
+
+const ITEMS_PER_PAGE = 1;
 
 interface TransactionPageProps {
-  searchParams: Promise<{ coin?: string }>;
+  searchParams: Promise<{ coin?: string; page?: string }>;
 }
 
 export default async function TransactionPage(props: TransactionPageProps) {
@@ -29,10 +41,19 @@ export default async function TransactionPage(props: TransactionPageProps) {
     return null;
   }
 
-  const [recentTransactions, buckets] = await Promise.all([
-    getRecentUserTransactions(session.user.id, 10, searchParams.coin),
+  const currentPage = Math.max(1, parseInt(searchParams.page || "1"));
+
+  const [{ transactions, total }, buckets] = await Promise.all([
+    getRecentUserTransactions(
+      session.user.id,
+      currentPage,
+      ITEMS_PER_PAGE,
+      searchParams.coin
+    ),
     getAllUserBuckets(session.user.id),
   ]);
+
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
 
@@ -41,7 +62,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
       acc[bucket.bucket.coin_symbol.toLowerCase()] = {
         symbol: bucket.bucket.coin_symbol,
         name: bucket.coinDetails.name,
-        image: bucket.coinDetails.image.small || bucket.coinDetails.image.thumb
+        image: bucket.coinDetails.image.small || bucket.coinDetails.image.thumb,
       };
     }
     return acc;
@@ -49,7 +70,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
 
   const availableCoins = Object.values(coinDetailsMap);
 
-  const enrichedTransactions = recentTransactions.map((tx) => ({
+  const enrichedTransactions = transactions.map((tx) => ({
     ...tx,
     coinDetails:
       buckets.find(
@@ -58,8 +79,15 @@ export default async function TransactionPage(props: TransactionPageProps) {
       )?.coinDetails || null,
   }));
 
+  function generatePageUrl(pageNum: number) {
+    const params = new URLSearchParams();
+    if (searchParams.coin) params.set("coin", searchParams.coin);
+    params.set("page", pageNum.toString());
+    return `/transaction?${params.toString()}`;
+  }
+
   return (
-    <div className="flex flex-col gap-6 p-4">
+    <div className="flex flex-col gap-6 p-4 pb-20">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -116,7 +144,65 @@ export default async function TransactionPage(props: TransactionPageProps) {
       </div>
 
       {enrichedTransactions.length > 0 ? (
-        <TransactionList transactions={enrichedTransactions} />
+        <>
+          <TransactionList transactions={enrichedTransactions} />
+          {totalPages > 1 && (
+            <Pagination className="mt-8">
+              <PaginationContent>
+                {currentPage > 1 && (
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href={generatePageUrl(currentPage - 1)}
+                    />
+                  </PaginationItem>
+                )}
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(
+                    (page) =>
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                  )
+                  .map((page, index, array) => {
+                    if (index > 0 && array[index - 1] !== page - 1) {
+                      return (
+                        <Fragment key={`ellipsis-${page}`}>
+                          <PaginationItem>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              href={generatePageUrl(page)}
+                              isActive={page === currentPage}
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        </Fragment>
+                      );
+                    }
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href={generatePageUrl(page)}
+                          isActive={page === currentPage}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+
+                {currentPage < totalPages && (
+                  <PaginationItem>
+                    <PaginationNext href={generatePageUrl(currentPage + 1)} />
+                  </PaginationItem>
+                )}
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
       ) : (
         <EmptyTransactionCard />
       )}
