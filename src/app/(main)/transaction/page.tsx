@@ -16,12 +16,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllUserBuckets } from "@/features/buckets/services/bucket.service";
 
 interface TransactionPageProps {
-  searchParams: { coin?: string };
+  searchParams: Promise<{ coin?: string }>;
 }
 
-export default async function TransactionPage({
-  searchParams,
-}: TransactionPageProps) {
+export default async function TransactionPage(props: TransactionPageProps) {
+  const searchParams = await props.searchParams;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
