@@ -30,7 +30,12 @@ export function TransactionList({ transactions }: TransactionListProps) {
             <AlertDescription className="mt-2 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Quantity:</span>
-                <span className="text-sm">{transaction.quantity ?? 0}</span>
+                <span className="text-sm">
+                  {transaction.quantity.toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 8,
+                  })}
+                </span>
               </div>
 
               <div className="flex items-center justify-between">

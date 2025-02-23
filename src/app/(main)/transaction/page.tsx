@@ -3,7 +3,8 @@ import { headers } from "next/headers";
 import { TransactionList } from "@/features/transactions/components";
 import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
 import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTransactionCard";
-import { History, Home as HomeIcon, AlertCircle } from "lucide-react";
+import { History, Home as HomeIcon, AlertCircle, Search } from "lucide-react";
+import { CoinFilterCombobox } from "@/features/transactions/components/CoinFilterCombobox";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,8 +13,15 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getAllUserBuckets } from "@/features/buckets/services/bucket.service";
 
-export default async function TransactionPage() {
+interface TransactionPageProps {
+  searchParams: { coin?: string };
+}
+
+export default async function TransactionPage({
+  searchParams,
+}: TransactionPageProps) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -22,8 +30,31 @@ export default async function TransactionPage() {
     return null;
   }
 
-  const recentTransactions = await getRecentUserTransactions(session.user.id, 10);
+  const [recentTransactions, buckets] = await Promise.all([
+    getRecentUserTransactions(session.user.id, 10, searchParams.coin),
+    getAllUserBuckets(session.user.id),
+  ]);
+
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
+
+  const coinDetailsMap = buckets.reduce((acc, bucket) => {
+    if (bucket.coinDetails) {
+      acc[bucket.bucket.coin_symbol.toLowerCase()] = {
+        symbol: bucket.bucket.coin_symbol,
+        name: bucket.coinDetails.name
+      };
+    }
+    return acc;
+  }, {} as Record<string, { symbol: string; name: string }>);
+
+  const availableCoins = Object.values(coinDetailsMap);
+
+  const enrichedTransactions = recentTransactions.map(tx => ({
+    ...tx,
+    coinDetails: buckets.find(b => 
+      b.bucket.coin_symbol.toLowerCase() === tx.coin_symbol.toLowerCase()
+    )?.coinDetails || null
+  }));
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -44,7 +75,7 @@ export default async function TransactionPage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex items-center gap-4 mb-2">
+      <div className="flex items-center gap-4">
         <Avatar>
           <AvatarImage
             src={session.user.image || ""}
@@ -61,16 +92,22 @@ export default async function TransactionPage() {
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          View your last 10 transactions across all cryptocurrency buckets in chronological order.
+          {searchParams.coin 
+            ? `Showing your last 10 transactions for ${coinDetailsMap[searchParams.coin.toLowerCase()]?.name || searchParams.coin.toUpperCase()}`
+            : "View your last 10 transactions across all cryptocurrency buckets"}
         </AlertDescription>
       </Alert>
 
-      {recentTransactions.length > 0 ? (
+      <div className="flex items-center gap-2">
+        <Search className="w-5 h-5 text-muted-foreground" />
+        <div className="flex-1">
+          <CoinFilterCombobox coins={availableCoins} />
+        </div>
+      </div>
+
+      {enrichedTransactions.length > 0 ? (
         <TransactionList
-          transactions={recentTransactions.map((tx) => ({
-            ...tx,
-            coinDetails: null,
-          }))}
+          transactions={enrichedTransactions}
         />
       ) : (
         <EmptyTransactionCard />
