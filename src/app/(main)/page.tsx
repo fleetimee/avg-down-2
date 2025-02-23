@@ -30,9 +30,9 @@ export default async function Home() {
     redirect("/sign-in");
   }
 
-  const [enrichedBucket, recentTransactions, buckets] = await Promise.all([
+  const [enrichedBucket, { transactions }, buckets] = await Promise.all([
     getLatestUserBucket(session.user.id),
-    getRecentUserTransactions(session.user.id, 5),
+    getRecentUserTransactions(session.user.id, 1, 5),
     getAllUserBuckets(session.user.id),
   ]);
 
@@ -44,7 +44,7 @@ export default async function Home() {
     {}
   );
 
-  const enrichedTransactions = recentTransactions.map((transaction) => ({
+  const enrichedTransactions = transactions.map((transaction) => ({
     ...transaction,
     coinDetails:
       bucketMap[transaction.coin_symbol.toLowerCase()]?.coinDetails || null,
@@ -102,7 +102,7 @@ export default async function Home() {
           <h2 className="text-lg font-semibold">Recent Transactions</h2>
         </div>
       </div>
-      {recentTransactions.length > 0 ? (
+      {transactions.length > 0 ? (
         <TransactionList transactions={enrichedTransactions} />
       ) : (
         <EmptyTransactionCard />
