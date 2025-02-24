@@ -59,3 +59,8 @@ export function formatNonCompactPrice(price: number | null) {
 
   return price < 0 ? `-${formatted}` : formatted;
 }
+
+export function truncateTransactionId(id: string, frontChars: number = 7, endChars: number = 4): string {
+  if (id.length <= frontChars + endChars) return id;
+  return `${id.slice(0, frontChars)}...${id.slice(-endChars)}`;
+}

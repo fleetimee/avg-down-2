@@ -1,10 +1,14 @@
+"use client";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Transaction } from "../types/transaction.types";
-import { formatJakartaTime, formatNonCompactPrice } from "@/lib/utils";
-import { Coins } from "lucide-react";
+import { formatJakartaTime, formatNonCompactPrice, truncateTransactionId } from "@/lib/utils";
+import { Coins, ArrowUpRight } from "lucide-react";
 import { CoinGeckoResponse } from "@/features/buckets/types/coingecko.types";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface TransactionListProps {
   transactions: Array<Transaction & { coinDetails: CoinGeckoResponse | null }>;
@@ -91,10 +95,16 @@ export function TransactionList({
                 </span>
               </div>
 
-              <div className="mt-1 pt-2 border-t border-border">
+              <div className="mt-1 pt-2 border-t border-border flex items-center justify-between">
                 <span className="text-xs font-mono text-muted-foreground">
-                  {transaction.id}
+                  {truncateTransactionId(transaction.id)}
                 </span>
+                <Button variant="neutral" size="sm" className="gap-2" asChild>
+                  <Link href={`/transaction/tx/${transaction.id}`}>
+                    <span>View Details</span>
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
             </AlertDescription>
           </div>

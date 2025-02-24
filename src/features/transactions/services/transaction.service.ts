@@ -35,9 +35,7 @@ export async function getRecentUserTransactions(
     FROM transactions t
     JOIN buckets b ON t.bucket_id = b.id
     WHERE t.user_id = $1
-    ${coinSymbol ? "AND LOWER(b.coin_symbol) = LOWER($2)" : ""}
-  `;
-
+    ${coinSymbol ? "AND LOWER(b.coin_symbol) = LOWER($2)" : ""}`;
   const countParams = coinSymbol ? [userId, coinSymbol] : [userId];
   const totalCount = await db.query(countQuery, countParams);
 
@@ -79,7 +77,7 @@ export async function createTransaction(
       bucket_id,
       quantity,
       price_per_coin
-    ) VALUES ($1, $2, $3, $4)
+    ) VALUES ($1, $2, $3::numeric(18,8), $4::numeric(18,8))
     RETURNING *`,
     [userId, bucketId, quantity, price_per_coin]
   );
@@ -110,4 +108,42 @@ export async function getUserCoins(userId: string) {
   );
 
   return coinDetails;
+}
+
+export async function getTransactionById(
+  transactionId: string,
+  userId: string
+): Promise<Transaction | null> {
+  const result = await db.query<Transaction>(
+    `SELECT 
+      t.*,
+      b.coin_symbol,
+      b.user_id
+    FROM transactions t
+    JOIN buckets b ON t.bucket_id = b.id
+    WHERE t.id = $1 AND t.user_id = $2
+    LIMIT 1`,
+    [transactionId, userId]
+  );
+
+  return result.rows[0] || null;
+}
+
+export async function markTransactionAsSold(
+  transactionId: string,
+  userId: string
+): Promise<Transaction> {
+  const result = await db.query<Transaction>(
+    `UPDATE transactions 
+     SET is_sale = TRUE 
+     WHERE id = $1 AND user_id = $2 
+     RETURNING *`,
+    [transactionId, userId]
+  );
+
+  if (!result.rows[0]) {
+    throw new Error("Transaction not found or unauthorized");
+  }
+
+  return result.rows[0];
 }
