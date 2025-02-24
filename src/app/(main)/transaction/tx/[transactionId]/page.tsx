@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "../../../../../auth";
+import { auth } from "../../../../../../auth";
 import { Metadata } from "next";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -26,7 +26,9 @@ interface PageProps {
   }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { transactionId } = await params;
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -69,12 +71,17 @@ export default async function TransactionDetailPage(props: PageProps) {
 
   const transaction = await getTransactionById(transactionId, session.user.id);
 
+  console.log("transaction", transaction);
+
   if (!transaction) {
     notFound();
   }
 
   // Get bucket details to get coin information
-  const enrichedBucket = await getBucketById(transaction.bucket_id, session.user.id);
+  const enrichedBucket = await getBucketById(
+    transaction.bucket_id,
+    session.user.id
+  );
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -88,7 +95,10 @@ export default async function TransactionDetailPage(props: PageProps) {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/transaction" className="flex items-center gap-2">
+            <BreadcrumbLink
+              href="/transaction"
+              className="flex items-center gap-2"
+            >
               <History className="h-4 w-4" />
               Transaction Hub
             </BreadcrumbLink>
@@ -103,7 +113,9 @@ export default async function TransactionDetailPage(props: PageProps) {
       </Breadcrumb>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Transaction Details</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Transaction Details
+        </h1>
         <Button variant="neutral" size="sm" asChild>
           <Link href="/transaction" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
@@ -128,7 +140,8 @@ export default async function TransactionDetailPage(props: PageProps) {
             )}
             <div>
               <h2 className="text-xl font-semibold">
-                {enrichedBucket?.coinDetails?.name || transaction.coin_symbol.toUpperCase()}
+                {enrichedBucket?.coinDetails?.name ||
+                  transaction.coin_symbol.toUpperCase()}
               </h2>
               <p className="text-sm text-muted-foreground">
                 {formatJakartaTime(transaction.transaction_date)}
