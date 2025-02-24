@@ -18,7 +18,7 @@ export function BottomNav() {
     : "/";
 
   return (
-    <div className="fixed bottom-0 w-full max-w-md border-t border-slate-200 bg-white">
+    <div className="absolute bottom-0 left-0 right-0 border-t border-slate-200 bg-white">
       <Tabs value={currentRoute} className="w-full">
         <TabsList className="w-full h-16 grid grid-cols-3 rounded-none border-0 bg-transparent">
           {navigation.map(({ href, label, icon: Icon }) => (
