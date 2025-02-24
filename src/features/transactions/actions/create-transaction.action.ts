@@ -6,9 +6,19 @@ import { headers } from "next/headers";
 import { createTransaction } from "../services/transaction.service";
 import { revalidatePath } from "next/cache";
 
+const MAX_NUMERIC_VALUE = 9999999999.99999999; // Matches PostgreSQL numeric(18,8) limit
+
 const transactionSchema = z.object({
-  quantity: z.coerce.number().positive("Quantity must be positive"),
-  price_per_coin: z.coerce.number().positive("Price must be positive"),
+  quantity: z.coerce
+    .number()
+    .positive("Quantity must be positive")
+    .max(MAX_NUMERIC_VALUE, "Quantity is too large")
+    .transform((val) => Number(val.toFixed(8))), // Ensure 8 decimal places max
+  price_per_coin: z.coerce
+    .number()
+    .positive("Price must be positive")
+    .max(MAX_NUMERIC_VALUE, "Price is too large")
+    .transform((val) => Number(val.toFixed(8))), // Ensure 8 decimal places max
 });
 
 export type CreateTransactionFormState = {
@@ -45,6 +55,18 @@ export async function createTransactionAction(
     }
 
     const { quantity, price_per_coin } = validatedFields.data;
+
+    // Additional validation for total cost
+    const totalCost = quantity * price_per_coin;
+
+    console.log("Total Cost:", totalCost);
+
+    if (totalCost > MAX_NUMERIC_VALUE) {
+      return {
+        success: false,
+        message: "Total transaction value exceeds maximum allowed amount",
+      };
+    }
 
     await createTransaction(
       session.user.id,

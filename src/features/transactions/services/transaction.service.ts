@@ -77,7 +77,7 @@ export async function createTransaction(
       bucket_id,
       quantity,
       price_per_coin
-    ) VALUES ($1, $2, $3, $4)
+    ) VALUES ($1, $2, $3::numeric(18,8), $4::numeric(18,8))
     RETURNING *`,
     [userId, bucketId, quantity, price_per_coin]
   );
