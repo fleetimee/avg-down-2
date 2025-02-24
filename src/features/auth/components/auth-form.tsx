@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, Wallet2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -20,8 +20,9 @@ export function AuthForm({ mode }: AuthFormProps) {
   return (
     <div className="space-y-8">
       <div className="space-y-2 text-center">
+        <Wallet2 className="mx-auto h-10 w-10 text-yellow-400 animate-bounce" />
         <h1 className="text-2xl font-bold">
-          {mode === "signin" ? "Sign In" : "Sign Up"}
+          {mode === "signin" ? "FleeDCA Sign In" : "FleeDCA Sign Up"}
         </h1>
         <p className="text-muted-foreground">
           {mode === "signin"
