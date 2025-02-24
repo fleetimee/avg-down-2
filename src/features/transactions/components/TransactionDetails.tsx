@@ -1,5 +1,9 @@
 "use client";
 
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { markAsSoldAction } from "../actions/mark-as-sold.action";
 import {
   AlertCircle,
   PencilIcon,
@@ -34,6 +38,71 @@ export function TransactionDetails({
   coinDetails,
 }: TransactionDetailsProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const handleMarkAsSold = () => {
+    startTransition(async () => {
+      const result = await markAsSoldAction(transaction.id);
+      
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+        setIsDrawerOpen(false);
+        router.refresh();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: result.message,
+        });
+      }
+    });
+  };
+
+  if (transaction.is_sale) {
+    return (
+      <Card variant="white">
+        <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+          <div className="flex items-center gap-3">
+            {coinDetails?.image?.thumb ? (
+              <Image
+                src={coinDetails.image.thumb}
+                alt={coinDetails.name}
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
+            ) : (
+              <AlertCircle className="h-6 w-6 text-muted-foreground" />
+            )}
+            <div>
+              <h2 className="text-xl font-semibold">
+                {coinDetails?.name || transaction.coin_symbol.toUpperCase()}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {formatJakartaTime(transaction.transaction_date)}
+              </p>
+            </div>
+          </div>
+          <Badge variant={transaction.is_sale ? "neutral" : "default"}>
+            {transaction.is_sale ? "Sale" : "Purchase"}
+          </Badge>
+        </CardHeader>
+        <CardContent>
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              This transaction has already been marked as sold.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card variant="white">
@@ -111,7 +180,11 @@ export function TransactionDetails({
             </div>
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
               <DrawerTrigger asChild>
-                <Button variant="neutral" className="flex items-center gap-2">
+                <Button 
+                  variant="neutral" 
+                  className="flex items-center gap-2"
+                  disabled={transaction.is_sale}
+                >
                   <CheckSquareIcon className="h-4 w-4" />
                   Mark as Sold
                 </Button>
@@ -120,21 +193,35 @@ export function TransactionDetails({
                 <DrawerHeader>
                   <DrawerTitle>Mark Transaction as Sold</DrawerTitle>
                   <DrawerDescription>
-                    Enter the selling details for your{" "}
-                    {transaction.coin_symbol.toUpperCase()} position.
+                    Are you sure you want to mark this transaction as sold? This
+                    action cannot be undone.
                   </DrawerDescription>
                 </DrawerHeader>
-                <div className="p-4 pt-0">
+                <div className="p-4 pt-0 space-y-4">
                   <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                       Original purchase: {transaction.quantity}{" "}
                       {transaction.coin_symbol.toUpperCase()} at Rp{" "}
-                      {formatNonCompactPrice(transaction.price_per_coin)} per
-                      coin
+                      {formatNonCompactPrice(transaction.price_per_coin)} per coin
                     </AlertDescription>
                   </Alert>
-                  {/* Form will be added in next implementation */}
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="neutral"
+                      onClick={() => setIsDrawerOpen(false)}
+                      className="w-full"
+                    >
+                      No, keep transaction
+                    </Button>
+                    <Button 
+                      className="w-full"
+                      onClick={handleMarkAsSold}
+                      disabled={isPending}
+                    >
+                      {isPending ? "Processing..." : "Yes, mark as sold"}
+                    </Button>
+                  </div>
                 </div>
               </DrawerContent>
             </Drawer>

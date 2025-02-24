@@ -128,3 +128,22 @@ export async function getTransactionById(
 
   return result.rows[0] || null;
 }
+
+export async function markTransactionAsSold(
+  transactionId: string,
+  userId: string
+): Promise<Transaction> {
+  const result = await db.query<Transaction>(
+    `UPDATE transactions 
+     SET is_sale = TRUE 
+     WHERE id = $1 AND user_id = $2 
+     RETURNING *`,
+    [transactionId, userId]
+  );
+
+  if (!result.rows[0]) {
+    throw new Error("Transaction not found or unauthorized");
+  }
+
+  return result.rows[0];
+}
