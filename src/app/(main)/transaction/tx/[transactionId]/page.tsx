@@ -155,8 +155,8 @@ export default async function TransactionDetailPage(props: PageProps) {
         <CardContent className="grid gap-4">
           <Alert>
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Transaction ID: {transaction.id}
+            <AlertDescription className="text-xs font-mono">
+              ID: {transaction.id}
             </AlertDescription>
           </Alert>
 
