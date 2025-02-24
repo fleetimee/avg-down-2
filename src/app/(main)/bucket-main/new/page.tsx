@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,6 +8,15 @@ import {
 } from "@/components/ui/breadcrumb";
 import { CreateBucketForm } from "@/features/buckets/components/CreateBucketForm";
 import { Home, LayoutGrid, FolderPlus } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Create New Bucket",
+  description: "Create a new investment bucket to track your cryptocurrency investments",
+  openGraph: {
+    title: "Create New Bucket",
+    description: "Create a new investment bucket to track your cryptocurrency investments",
+  },
+};
 
 export default function BucketNewPage() {
   return (
