@@ -10,26 +10,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatJakartaTime } from "@/lib/utils";
-import { type CoinGeckoResponse } from "../types/coingecko.types";
+import {
+  EnrichedBucket,
+  type CoinGeckoResponse,
+} from "../types/coingecko.types";
 import { useState } from "react";
 import { DeleteBucketDrawer } from "./DeleteBucketDrawer";
 
 interface BucketDetailsHeaderProps {
   coinDetails: CoinGeckoResponse;
   createdAt: Date;
-  bucketId: string;
+  bucket: EnrichedBucket["bucket"];
 }
 
 export function BucketDetailsHeader({
   coinDetails,
   createdAt,
-  bucketId,
+  bucket,
 }: BucketDetailsHeaderProps) {
   const [isDeleteDrawerOpen, setIsDeleteDrawerOpen] = useState(false);
   const router = useRouter();
 
+  console.log(coinDetails);
+
   const handleViewTransactions = () => {
-    router.push(`/transaction?coin=${coinDetails.symbol.toLowerCase()}`);
+    router.push(`/transaction?coin=${bucket.coin_symbol.toLowerCase()}`);
   };
 
   return (
@@ -79,7 +84,7 @@ export function BucketDetailsHeader({
       </div>
 
       <DeleteBucketDrawer
-        bucketId={bucketId}
+        bucketId={bucket.id}
         bucketName={coinDetails?.name}
         isOpen={isDeleteDrawerOpen}
         onClose={() => setIsDeleteDrawerOpen(false)}
