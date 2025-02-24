@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
+import { Metadata } from "next";
 import {
   getLatestUserBucket,
   getAllUserBuckets,
@@ -20,6 +21,23 @@ import {
 } from "@/components/ui/breadcrumb";
 import { EmptyBucketCard } from "@/features/buckets/components/EmptyBucketCard";
 import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTransactionCard";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  const userName = session?.user?.name || "Guest";
+
+  return {
+    title: `${userName}'s Home`,
+    description: "Manage and track your investment buckets and transactions",
+    openGraph: {
+      title: `${userName}'s Home`,
+      description: "Manage and track your investment buckets and transactions",
+    },
+  };
+}
 
 export default async function Home() {
   const session = await auth.api.getSession({
