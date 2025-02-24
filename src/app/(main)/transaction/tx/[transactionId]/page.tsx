@@ -15,6 +15,8 @@ import {
   PencilIcon,
   CheckSquareIcon,
   ShareIcon,
+  AlertTriangle,
+  TrendingUp,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -212,6 +214,71 @@ export default async function TransactionDetailPage(props: PageProps) {
               </Button>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-muted-foreground" />
+            <h2 className="text-lg font-semibold">Performance Since Buy</h2>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          {enrichedBucket?.coinDetails?.market_data ? (
+            <>
+              <div className="flex justify-between py-2 border-b">
+                <span className="text-muted-foreground font-mono text-sm">
+                  Current Price
+                </span>
+                <span className="font-mono text-sm">
+                  Rp{" "}
+                  {formatNonCompactPrice(
+                    enrichedBucket.coinDetails.market_data.current_price.idr
+                  )}
+                </span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span className="text-muted-foreground font-mono text-sm">
+                  Current Value
+                </span>
+                <span className="font-mono text-sm">
+                  Rp{" "}
+                  {formatNonCompactPrice(
+                    (enrichedBucket.coinDetails.market_data.current_price.idr ??
+                      0) * transaction.quantity
+                  )}
+                </span>
+              </div>
+              <div className="flex justify-between py-2">
+                <span className="font-mono text-sm">Unrealized PnL</span>
+                {(() => {
+                  const currentPrice =
+                    enrichedBucket.coinDetails.market_data.current_price.idr ??
+                    0;
+                  const currentValue = currentPrice * transaction.quantity;
+                  const pnl = currentValue - transaction.total_cost;
+                  const pnlPercentage = (pnl / transaction.total_cost) * 100;
+
+                  return (
+                    <span
+                      className={`font-mono text-base ${
+                        pnl >= 0 ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {pnl >= 0 ? "+" : ""}
+                      {formatNonCompactPrice(pnl)} ({pnlPercentage.toFixed(2)}%)
+                    </span>
+                  );
+                })()}
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <AlertTriangle className="h-4 w-4" />
+              <p className="text-sm">Unable to fetch current market data</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
