@@ -3,6 +3,16 @@ import { redirect } from "next/navigation";
 import { auth } from "../../../../auth";
 import { User } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "View and manage your user profile information",
+  openGraph: {
+    title: "Profile",
+    description: "View and manage your user profile information",
+  },
+};
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({

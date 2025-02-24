@@ -4,6 +4,16 @@ import { auth } from "../../../../auth";
 import { Settings, LogOut } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LogoutButton } from "@/features/auth/components/logout-button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Settings",
+  description: "Configure your application preferences and account settings",
+  openGraph: {
+    title: "Settings",
+    description: "Configure your application preferences and account settings",
+  },
+};
 
 export default async function SettingsPage() {
   const session = await auth.api.getSession({
