@@ -17,13 +17,15 @@ const dmMono = DM_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | AvgDown",
-    default: "AvgDown - Track Your Investment Buckets",
+    template: "%s | FleeDCA",
+    default: "FleeDCA - Track Your Investment Buckets",
   },
-  description: "Smart investment tracking and dollar-cost averaging management platform",
+  description:
+    "Smart investment tracking and dollar-cost averaging management platform",
   openGraph: {
-    title: "AvgDown",
-    description: "Smart investment tracking and dollar-cost averaging management platform",
+    title: "FleeDCA",
+    description:
+      "Smart investment tracking and dollar-cost averaging management platform",
     type: "website",
   },
 };
