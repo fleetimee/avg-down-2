@@ -1,33 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Github, Loader2 } from "lucide-react";
+import { Chrome, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 
-export function GithubButton() {
+export function GoogleButton() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleGithubSignIn = async () => {
+  const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
       await authClient.signIn.social(
         {
-          provider: "github",
+          provider: "google",
         },
         {
           onSuccess: () => {
             setIsLoading(false);
-
             toast({
               title: "Success",
-              description: "Signed in with GitHub successfully.",
+              description: "Signed in with Google successfully.",
             });
           },
           onError: (error) => {
-            console.error("GitHub sign in error:", error);
+            console.error("Google sign in error:", error);
             toast({
               title: "Error",
               description: error.error.message,
@@ -38,10 +37,10 @@ export function GithubButton() {
         }
       );
     } catch (error) {
-      console.error("GitHub sign in failed:", error);
+      console.error("Google sign in failed:", error);
       toast({
         title: "Error",
-        description: "Failed to sign in with GitHub. Please try again.",
+        description: "Failed to sign in with Google. Please try again.",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -53,13 +52,13 @@ export function GithubButton() {
       type="button"
       variant="default"
       className="w-full gap-2 h-12 text-base"
-      onClick={handleGithubSignIn}
+      onClick={handleGoogleSignIn}
       disabled={isLoading}
     >
       {isLoading ? (
         <Loader2 className="h-5 w-5 animate-spin" />
       ) : (
-        <Github className="h-5 w-5" />
+        <Chrome className="h-5 w-5" />
       )}
     </Button>
   );

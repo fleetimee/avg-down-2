@@ -7,6 +7,7 @@ import { Form } from "@/components/ui/form";
 import { useAuthForm } from "../hooks/use-auth-form";
 import { AuthFormFields } from "./auth-form-fields";
 import { GithubButton } from "./github-button";
+import { GoogleButton } from "./google-button";
 import { Separator } from "@/components/ui/separator";
 
 interface AuthFormProps {
@@ -50,7 +51,10 @@ export function AuthForm({ mode }: AuthFormProps) {
 
             <Separator />
 
-            <GithubButton />
+            <div className="grid grid-cols-2 gap-4">
+              <GithubButton />
+              <GoogleButton />
+            </div>
 
             <div className="text-center text-sm pt-4">
               {mode === "signin" ? (
