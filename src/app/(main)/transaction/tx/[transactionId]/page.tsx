@@ -7,7 +7,15 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getTransactionById } from "@/features/transactions/services/transaction.service";
 import { getBucketById } from "@/features/buckets/services/bucket.service";
 import { formatJakartaTime, formatNonCompactPrice } from "@/lib/utils";
-import { AlertCircle, ArrowLeft, History, Home } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  History,
+  Home,
+  PencilIcon,
+  CheckSquareIcon,
+  ShareIcon,
+} from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -189,10 +197,19 @@ export default async function TransactionDetailPage(props: PageProps) {
 
             <div className="grid grid-rows-2 gap-2 pt-4">
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="neutral">Update</Button>
-                <Button variant="neutral">Share</Button>
+                <Button variant="default" className="flex items-center gap-2">
+                  <PencilIcon className="h-4 w-4" />
+                  Update
+                </Button>
+                <Button variant="neutral" className="flex items-center gap-2">
+                  <ShareIcon className="h-4 w-4" />
+                  Share
+                </Button>
               </div>
-              <Button variant="neutral">Mark as Sold</Button>
+              <Button variant="neutral" className="flex items-center gap-2">
+                <CheckSquareIcon className="h-4 w-4" />
+                Mark as Sold
+              </Button>
             </div>
           </div>
         </CardContent>
