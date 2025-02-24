@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "../../../../../auth";
+import { Metadata } from "next";
 import { getBucketById } from "@/features/buckets/services/bucket.service";
 import { BucketDetailsBreadcrumb } from "@/features/buckets/components/BucketDetailsBreadcrumb";
 import { BucketDetailsHeader } from "@/features/buckets/components/BucketDetailsHeader";
@@ -12,6 +13,38 @@ interface PageProps {
   params: Promise<{
     bucketId: string;
   }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { bucketId } = await params;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return {
+      title: "Bucket Details",
+      description: "View detailed information about your investment bucket",
+    };
+  }
+
+  const enrichedBucket = await getBucketById(bucketId, session.user.id);
+  if (!enrichedBucket || !enrichedBucket.coinDetails) {
+    return {
+      title: "Bucket Not Found",
+      description: "The requested bucket could not be found",
+    };
+  }
+
+  const { bucket, coinDetails } = enrichedBucket;
+  return {
+    title: `${coinDetails.name} (${bucket.coin_symbol.toUpperCase()})`,
+    description: `Track your ${coinDetails.name} investment bucket and performance`,
+    openGraph: {
+      title: `${coinDetails.name} Bucket Details`,
+      description: `Track your ${coinDetails.name} investment bucket and performance`,
+    },
+  };
 }
 
 export default async function BucketDetailsPage(props: PageProps) {
