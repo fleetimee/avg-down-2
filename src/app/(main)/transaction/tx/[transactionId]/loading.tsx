@@ -53,7 +53,7 @@ export default function TransactionDetailLoading() {
         </Button>
       </div>
 
-      <Card>
+      <Card variant="white">
         <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-3">
             <Skeleton className="h-6 w-6 rounded-full" />

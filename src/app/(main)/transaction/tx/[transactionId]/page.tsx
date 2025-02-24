@@ -134,7 +134,7 @@ export default async function TransactionDetailPage(props: PageProps) {
         </Button>
       </div>
 
-      <Card>
+      <Card variant="white">
         <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-3">
             {enrichedBucket?.coinDetails?.image?.thumb ? (
@@ -199,7 +199,7 @@ export default async function TransactionDetailPage(props: PageProps) {
 
             <div className="grid grid-rows-2 gap-2 pt-4">
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="default" className="flex items-center gap-2">
+                <Button variant="neutral" className="flex items-center gap-2">
                   <PencilIcon className="h-4 w-4" />
                   Update
                 </Button>
@@ -217,7 +217,7 @@ export default async function TransactionDetailPage(props: PageProps) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card variant="white">
         <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-muted-foreground" />
