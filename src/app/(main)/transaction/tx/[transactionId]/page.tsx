@@ -250,28 +250,47 @@ export default async function TransactionDetailPage(props: PageProps) {
                   )}
                 </span>
               </div>
-              <div className="flex justify-between py-2">
-                <span className="font-mono text-sm">Unrealized PnL</span>
-                {(() => {
-                  const currentPrice =
-                    enrichedBucket.coinDetails.market_data.current_price.idr ??
-                    0;
-                  const currentValue = currentPrice * transaction.quantity;
-                  const pnl = currentValue - transaction.total_cost;
-                  const pnlPercentage = (pnl / transaction.total_cost) * 100;
+              {(() => {
+                const currentPrice =
+                  enrichedBucket.coinDetails.market_data.current_price.idr ?? 0;
+                const currentValue = currentPrice * transaction.quantity;
+                const pnl = currentValue - transaction.total_cost;
+                const pnlPercentage = (pnl / transaction.total_cost) * 100;
 
-                  return (
+                const getMessage = (pnl: number, percentage: number) => {
+                  if (percentage > 100) return "🚀 To the moon!";
+                  if (percentage > 50) return "💎 Diamond hands paying off!";
+                  if (percentage > 20) return "📈 Solid gains!";
+                  if (percentage > 0) return "✨ In the green!";
+                  if (percentage > -10) return "💪 Hold strong!";
+                  if (percentage > -20) return "😅 Still early days!";
+                  if (percentage > -50) return "🙏 Trust the process!";
+                  return "💎 True diamond hands test!";
+                };
+
+                return (
+                  <div className="flex flex-col items-center gap-2 py-4">
                     <span
-                      className={`font-mono text-base ${
+                      className={`font-mono text-2xl font-bold ${
                         pnl >= 0 ? "text-green-500" : "text-red-500"
                       }`}
                     >
                       {pnl >= 0 ? "+" : ""}
-                      {formatNonCompactPrice(pnl)} ({pnlPercentage.toFixed(2)}%)
+                      {formatNonCompactPrice(pnl)}
                     </span>
-                  );
-                })()}
-              </div>
+                    <span
+                      className={`font-mono text-sm ${
+                        pnl >= 0 ? "text-green-500/80" : "text-red-500/80"
+                      }`}
+                    >
+                      ({pnlPercentage.toFixed(2)}%)
+                    </span>
+                    <span className="text-sm text-muted-foreground font-medium mt-2">
+                      {getMessage(pnl, pnlPercentage)}
+                    </span>
+                  </div>
+                );
+              })()}
             </>
           ) : (
             <div className="flex items-center gap-2 text-muted-foreground">
