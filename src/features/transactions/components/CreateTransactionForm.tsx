@@ -21,24 +21,30 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
-  quantity: z.number({
-    required_error: "Quantity is required",
-    invalid_type_error: "Quantity must be a number",
-  }).positive("Quantity must be positive"),
-  price_per_coin: z.number({
-    required_error: "Price is required",
-    invalid_type_error: "Price must be a number",
-  }).positive("Price must be positive"),
+  quantity: z
+    .number({
+      required_error: "Quantity is required",
+      invalid_type_error: "Quantity must be a number",
+    })
+    .positive("Quantity must be positive"),
+  price_per_coin: z
+    .number({
+      required_error: "Price is required",
+      invalid_type_error: "Price must be a number",
+    })
+    .positive("Price must be positive"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 interface CreateTransactionFormProps {
   bucketId: string;
+  latestPrice?: number;
 }
 
 export function CreateTransactionForm({
   bucketId,
+  latestPrice,
 }: CreateTransactionFormProps) {
   const router = useRouter();
   const { toast } = useToast();
@@ -49,7 +55,7 @@ export function CreateTransactionForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       quantity: undefined,
-      price_per_coin: undefined,
+      price_per_coin: latestPrice,
     },
   });
 
@@ -88,7 +94,9 @@ export function CreateTransactionForm({
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Enter the quantity and price per coin for your new transaction.
+            {latestPrice
+              ? "Current market price has been pre-filled. You can adjust it if needed."
+              : "Enter the quantity and price per coin for your new transaction."}
           </AlertDescription>
         </Alert>
 

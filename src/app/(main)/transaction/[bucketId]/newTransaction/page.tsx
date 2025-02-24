@@ -11,6 +11,7 @@ import {
 import { CreateTransactionForm } from "@/features/transactions/components/CreateTransactionForm";
 import { Home, LayoutGrid, Plus } from "lucide-react";
 import { getBucketById } from "@/features/buckets/services/bucket.service";
+import { getCoinDetails } from "@/features/buckets/services/coingecko.service";
 
 interface NewTransactionPageProps {
   params: Promise<{
@@ -18,7 +19,9 @@ interface NewTransactionPageProps {
   }>;
 }
 
-export default async function NewTransactionPage(props: NewTransactionPageProps) {
+export default async function NewTransactionPage(
+  props: NewTransactionPageProps
+) {
   const params = await props.params;
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -35,6 +38,12 @@ export default async function NewTransactionPage(props: NewTransactionPageProps)
   if (!bucket) {
     redirect("/bucket-main");
   }
+
+  // Fetch latest price data
+  const coinDetails = await getCoinDetails(
+    bucket.bucket.coin_symbol.toLowerCase()
+  );
+  const latestPrice = coinDetails?.market_data?.current_price?.idr;
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -78,7 +87,10 @@ export default async function NewTransactionPage(props: NewTransactionPageProps)
           </div>
         </div>
         <div className="max-w-lg">
-          <CreateTransactionForm bucketId={params.bucketId} />
+          <CreateTransactionForm
+            bucketId={params.bucketId}
+            latestPrice={latestPrice}
+          />
         </div>
       </div>
     </div>
