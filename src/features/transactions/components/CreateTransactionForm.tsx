@@ -40,11 +40,13 @@ type FormValues = z.infer<typeof formSchema>;
 interface CreateTransactionFormProps {
   bucketId: string;
   latestPrice?: number;
+  priceError?: string;
 }
 
 export function CreateTransactionForm({
   bucketId,
   latestPrice,
+  priceError,
 }: CreateTransactionFormProps) {
   const router = useRouter();
   const { toast } = useToast();
@@ -91,10 +93,12 @@ export function CreateTransactionForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Alert>
+        <Alert variant={priceError ? "destructive" : "default"}>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {latestPrice
+            {priceError
+              ? priceError
+              : latestPrice
               ? "Current market price has been pre-filled. You can adjust it if needed."
               : "Enter the quantity and price per coin for your new transaction."}
           </AlertDescription>

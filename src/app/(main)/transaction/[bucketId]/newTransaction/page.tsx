@@ -40,10 +40,27 @@ export default async function NewTransactionPage(
   }
 
   // Fetch latest price data
-  const coinDetails = await getCoinDetails(
-    bucket.bucket.coin_symbol.toLowerCase()
-  );
-  const latestPrice = coinDetails?.market_data?.current_price?.idr;
+  let latestPrice: number | undefined;
+  let priceError: string | undefined;
+
+  try {
+    const coinDetails = await getCoinDetails(
+      bucket.bucket.coin_symbol.toLowerCase()
+    );
+    if (!coinDetails) {
+      throw new Error("Could not fetch coin details");
+    }
+
+    if (!coinDetails.market_data?.current_price?.idr) {
+      throw new Error("Price data not available");
+    }
+
+    latestPrice = coinDetails.market_data.current_price.idr;
+  } catch (error) {
+    console.error("Error fetching latest price:", error);
+    priceError =
+      "Could not fetch current market price. You'll need to enter the price manually.";
+  }
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -90,6 +107,7 @@ export default async function NewTransactionPage(
           <CreateTransactionForm
             bucketId={params.bucketId}
             latestPrice={latestPrice}
+            priceError={priceError}
           />
         </div>
       </div>
