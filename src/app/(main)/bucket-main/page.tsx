@@ -22,6 +22,16 @@ import {
   FolderPlus,
   Briefcase,
 } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Bucket Hub",
+  description: "View and manage your investment buckets",
+  openGraph: {
+    title: "Bucket Hub",
+    description: "View and manage your investment buckets",
+  },
+};
 
 export default async function BucketMain() {
   const session = await auth.api.getSession({
