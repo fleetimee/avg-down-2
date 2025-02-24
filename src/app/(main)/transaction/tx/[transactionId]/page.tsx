@@ -162,8 +162,10 @@ export default async function TransactionDetailPage(props: PageProps) {
 
           <div className="grid gap-4 pt-4">
             <div className="flex justify-between py-2 border-b">
-              <span className="text-muted-foreground">Quantity</span>
-              <span className="font-medium">
+              <span className="text-muted-foreground font-mono text-sm">
+                Quantity
+              </span>
+              <span className="font-mono text-sm">
                 {transaction.quantity.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 8,
@@ -171,16 +173,26 @@ export default async function TransactionDetailPage(props: PageProps) {
               </span>
             </div>
             <div className="flex justify-between py-2 border-b">
-              <span className="text-muted-foreground">Price per coin</span>
-              <span className="font-medium">
+              <span className="text-muted-foreground font-mono text-sm">
+                Price per coin
+              </span>
+              <span className="font-mono text-sm">
                 Rp {formatNonCompactPrice(transaction.price_per_coin)}
               </span>
             </div>
             <div className="flex justify-between py-2">
-              <span className="font-medium">Total value</span>
-              <span className="text-lg font-semibold">
+              <span className="font-mono text-sm">Total value</span>
+              <span className="font-mono text-base">
                 Rp {formatNonCompactPrice(transaction.total_cost)}
               </span>
+            </div>
+
+            <div className="grid grid-rows-2 gap-2 pt-4">
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="neutral">Update</Button>
+                <Button variant="neutral">Share</Button>
+              </div>
+              <Button variant="neutral">Mark as Sold</Button>
             </div>
           </div>
         </CardContent>
