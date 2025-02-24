@@ -1,5 +1,6 @@
 import { auth } from "../../../../auth";
 import { headers } from "next/headers";
+import { Metadata } from "next";
 import { TransactionList } from "@/features/transactions/components";
 import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
 import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTransactionCard";
@@ -25,6 +26,15 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Fragment } from "react";
+
+export const metadata: Metadata = {
+  title: "Transaction Hub",
+  description: "View and manage your cryptocurrency transactions history",
+  openGraph: {
+    title: "Transaction Hub",
+    description: "View and manage your cryptocurrency transactions history",
+  },
+};
 
 const ITEMS_PER_PAGE = 10;
 
