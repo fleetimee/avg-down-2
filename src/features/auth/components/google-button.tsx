@@ -20,18 +20,10 @@ export function GoogleButton() {
         {
           onSuccess: () => {
             setIsLoading(false);
-            toast({
-              title: "Success",
-              description: "Signed in with Google successfully.",
-            });
           },
           onError: (error) => {
             console.error("Google sign in error:", error);
-            toast({
-              title: "Error",
-              description: error.error.message,
-              variant: "destructive",
-            });
+
             setIsLoading(false);
           },
         }

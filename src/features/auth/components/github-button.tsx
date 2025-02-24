@@ -20,19 +20,10 @@ export function GithubButton() {
         {
           onSuccess: () => {
             setIsLoading(false);
-
-            toast({
-              title: "Success",
-              description: "Signed in with GitHub successfully.",
-            });
           },
           onError: (error) => {
             console.error("GitHub sign in error:", error);
-            toast({
-              title: "Error",
-              description: error.error.message,
-              variant: "destructive",
-            });
+
             setIsLoading(false);
           },
         }
