@@ -2,10 +2,15 @@ import { auth } from "../../../../auth";
 import { headers } from "next/headers";
 import { Metadata } from "next";
 import { TransactionList } from "@/features/transactions/components";
-import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
+import {
+  getRecentUserTransactions,
+  type TransactionSortOption,
+} from "@/features/transactions/services/transaction.service";
 import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTransactionCard";
 import { History, Home as HomeIcon, AlertCircle, Search } from "lucide-react";
 import { CoinFilterCombobox } from "@/features/transactions/components/CoinFilterCombobox";
+import { FilterDrawer } from "@/features/transactions/components/FilterDrawer";
+import { FilterBadges } from "@/features/transactions/components/FilterBadges";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -36,10 +41,14 @@ export const metadata: Metadata = {
   },
 };
 
-const ITEMS_PER_PAGE = 10;
-
 interface TransactionPageProps {
-  searchParams: Promise<{ coin?: string; page?: string }>;
+  searchParams: Promise<{
+    coin?: string;
+    page?: string;
+    sort?: string;
+    sale?: string;
+    limit?: string;
+  }>;
 }
 
 export default async function TransactionPage(props: TransactionPageProps) {
@@ -53,19 +62,20 @@ export default async function TransactionPage(props: TransactionPageProps) {
   }
 
   const currentPage = Math.max(1, parseInt(searchParams.page || "1"));
+  // Add validation for items per page limit
+  const rawLimit = parseInt(searchParams.limit || "10");
+  const itemsPerPage = rawLimit > 100 ? 100 : rawLimit;
 
   const [{ transactions, total }, buckets] = await Promise.all([
-    getRecentUserTransactions(
-      session.user.id,
-      currentPage,
-      ITEMS_PER_PAGE,
-      searchParams.coin
-    ),
+    getRecentUserTransactions(session.user.id, currentPage, itemsPerPage, {
+      coinSymbol: searchParams.coin,
+      sortBy: (searchParams.sort as TransactionSortOption) || "date_desc",
+      isSale: searchParams.sale === "true" ? true : undefined,
+    }),
     getAllUserBuckets(session.user.id),
   ]);
 
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
-
+  const totalPages = Math.ceil(total / itemsPerPage);
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
 
   const coinDetailsMap = buckets.reduce((acc, bucket) => {
@@ -91,8 +101,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
   }));
 
   function generatePageUrl(pageNum: number) {
-    const params = new URLSearchParams();
-    if (searchParams.coin) params.set("coin", searchParams.coin);
+    const params = new URLSearchParams(searchParams);
     params.set("page", pageNum.toString());
     return `/transaction?${params.toString()}`;
   }
@@ -140,19 +149,27 @@ export default async function TransactionPage(props: TransactionPageProps) {
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
           {searchParams.coin
-            ? `Showing your last 10 transactions for ${
+            ? `Showing your ${
+                searchParams.sale === "true" ? "sale" : ""
+              } transactions for ${
                 coinDetailsMap[searchParams.coin.toLowerCase()]?.name ||
                 searchParams.coin.toUpperCase()
               }`
-            : "View your last 10 transactions across all cryptocurrency buckets"}
+            : `View your ${
+                searchParams.sale === "true" ? "sale" : ""
+              } transactions across all cryptocurrency buckets`}
         </AlertDescription>
       </Alert>
 
-      <div className="flex items-center gap-2">
-        <Search className="w-5 h-5 text-muted-foreground" />
-        <div className="flex-1">
-          <CoinFilterCombobox coins={availableCoins} />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <Search className="w-5 h-5 text-muted-foreground" />
+          <div className="flex-1">
+            <CoinFilterCombobox coins={availableCoins} />
+          </div>
+          <FilterDrawer />
         </div>
+        <FilterBadges coinDetails={coinDetailsMap} />
       </div>
 
       {enrichedTransactions.length > 0 ? (
@@ -161,7 +178,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
             transactions={enrichedTransactions}
             currentPage={currentPage}
             totalItems={total}
-            itemsPerPage={ITEMS_PER_PAGE}
+            itemsPerPage={itemsPerPage}
             showPagination={true}
           />
           {totalPages > 1 && (

@@ -45,7 +45,7 @@ export function TransactionDetails({
   const handleMarkAsSold = () => {
     startTransition(async () => {
       const result = await markAsSoldAction(transaction.id);
-      
+
       if (result.success) {
         toast({
           title: "Success",
@@ -169,7 +169,14 @@ export function TransactionDetails({
 
           <div className="grid grid-rows-2 gap-2 pt-4">
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="neutral" className="flex items-center gap-2">
+              <Button
+                variant="neutral"
+                className="flex items-center gap-2"
+                onClick={() =>
+                  router.push(`/transaction/tx/${transaction.id}/edit`)
+                }
+                disabled={transaction.is_sale}
+              >
                 <PencilIcon className="h-4 w-4" />
                 Update
               </Button>
@@ -180,8 +187,8 @@ export function TransactionDetails({
             </div>
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
               <DrawerTrigger asChild>
-                <Button 
-                  variant="neutral" 
+                <Button
+                  variant="neutral"
                   className="flex items-center gap-2"
                   disabled={transaction.is_sale}
                 >
@@ -203,7 +210,8 @@ export function TransactionDetails({
                     <AlertDescription>
                       Original purchase: {transaction.quantity}{" "}
                       {transaction.coin_symbol.toUpperCase()} at Rp{" "}
-                      {formatNonCompactPrice(transaction.price_per_coin)} per coin
+                      {formatNonCompactPrice(transaction.price_per_coin)} per
+                      coin
                     </AlertDescription>
                   </Alert>
                   <div className="flex flex-col gap-2">
@@ -214,7 +222,7 @@ export function TransactionDetails({
                     >
                       No, keep transaction
                     </Button>
-                    <Button 
+                    <Button
                       className="w-full"
                       onClick={handleMarkAsSold}
                       disabled={isPending}

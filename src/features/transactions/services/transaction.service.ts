@@ -2,6 +2,14 @@ import db from "@/app/db";
 import { Transaction } from "../types/transaction.types";
 import { getCoinDetails } from "@/features/buckets/services/coingecko.service";
 
+export type TransactionSortOption =
+  | "date_desc"
+  | "date_asc"
+  | "amount_desc"
+  | "amount_asc"
+  | "price_desc"
+  | "price_asc";
+
 export async function getLatestUserTransaction(
   userId: string
 ): Promise<Transaction | null> {
@@ -23,21 +31,67 @@ export async function getLatestUserTransaction(
 
 export async function getRecentUserTransactions(
   userId: string,
-  page: number = 10,
-  limit: number = 1,
-  coinSymbol?: string
+  page: number = 1,
+  limit: number = 10,
+  filters: {
+    coinSymbol?: string;
+    isSale?: boolean;
+    sortBy?: TransactionSortOption;
+  } = {}
 ): Promise<{ transactions: Transaction[]; total: number }> {
   const offset = (page - 1) * limit;
+  const { coinSymbol, isSale, sortBy } = filters;
+
+  // Build WHERE clause
+  const conditions = ["t.user_id = $1"];
+  const params = [userId];
+  let paramCount = 1;
+
+  if (coinSymbol) {
+    paramCount++;
+    conditions.push(`LOWER(b.coin_symbol) = LOWER($${paramCount})`);
+    params.push(coinSymbol);
+  }
+
+  if (typeof isSale === "boolean") {
+    paramCount++;
+    conditions.push(`t.is_sale = $${paramCount}`);
+    params.push(isSale.toString());
+  }
+
+  // Define sorting
+  let orderBy = "t.transaction_date DESC";
+  if (sortBy) {
+    switch (sortBy) {
+      case "date_asc":
+        orderBy = "t.transaction_date ASC";
+        break;
+      case "date_desc":
+        orderBy = "t.transaction_date DESC";
+        break;
+      case "amount_desc":
+        orderBy = "t.quantity DESC";
+        break;
+      case "amount_asc":
+        orderBy = "t.quantity ASC";
+        break;
+      case "price_desc":
+        orderBy = "t.price_per_coin DESC";
+        break;
+      case "price_asc":
+        orderBy = "t.price_per_coin ASC";
+        break;
+    }
+  }
 
   // Get total count
   const countQuery = `
     SELECT COUNT(*) as total
     FROM transactions t
     JOIN buckets b ON t.bucket_id = b.id
-    WHERE t.user_id = $1
-    ${coinSymbol ? "AND LOWER(b.coin_symbol) = LOWER($2)" : ""}`;
-  const countParams = coinSymbol ? [userId, coinSymbol] : [userId];
-  const totalCount = await db.query(countQuery, countParams);
+    WHERE ${conditions.join(" AND ")}`;
+
+  const totalCount = await db.query(countQuery, params);
 
   // Get paginated transactions
   const query = `
@@ -47,17 +101,13 @@ export async function getRecentUserTransactions(
       b.user_id
     FROM transactions t
     JOIN buckets b ON t.bucket_id = b.id
-    WHERE t.user_id = $1
-    ${coinSymbol ? "AND LOWER(b.coin_symbol) = LOWER($4)" : ""}
-    ORDER BY t.transaction_date DESC
-    LIMIT $2 OFFSET $3
+    WHERE ${conditions.join(" AND ")}
+    ORDER BY ${orderBy}
+    LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}
   `;
 
-  const params = coinSymbol
-    ? [userId, limit, offset, coinSymbol]
-    : [userId, limit, offset];
-
-  const result = await db.query<Transaction>(query, params);
+  const queryParams = [...params, limit, offset];
+  const result = await db.query<Transaction>(query, queryParams);
 
   return {
     transactions: result.rows,
@@ -146,4 +196,22 @@ export async function markTransactionAsSold(
   }
 
   return result.rows[0];
+}
+
+export async function updateTransaction(
+  transactionId: string,
+  userId: string,
+  quantity: number,
+  price_per_coin: number
+): Promise<boolean> {
+  const result = await db.query(
+    `UPDATE transactions 
+     SET quantity = $1::numeric(18,8), 
+         price_per_coin = $2::numeric(18,8)
+     WHERE id = $3 AND user_id = $4
+     RETURNING id`,
+    [quantity, price_per_coin, transactionId, userId]
+  );
+
+  return result.rows.length > 0;
 }
