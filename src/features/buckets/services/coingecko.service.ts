@@ -57,6 +57,7 @@ export async function getCoinMarketChart(
 
   const mergedOptions = { ...defaultOptions, ...options };
 
+  // Build query parameters
   const params = new URLSearchParams();
   Object.entries(mergedOptions).forEach(([key, value]) => {
     if (value !== undefined) {
@@ -65,11 +66,13 @@ export async function getCoinMarketChart(
   });
 
   try {
+    // Make the request to our internal API endpoint
     const response = await fetch(
       `${BASE_URL}/api/coins/${encodeURIComponent(
         coinId.toLowerCase()
       )}/market-chart?${params.toString()}`,
       {
+        // Use Next.js 15 fetch cache configuration
         next: { revalidate: 300 }, // Cache for 5 minutes
       }
     );
@@ -81,7 +84,16 @@ export async function getCoinMarketChart(
       return null;
     }
 
-    return await response.json();
+    // Parse and validate the response
+    const data = await response.json();
+
+    // Validate the response structure matches what we expect
+    if (!data.prices || !Array.isArray(data.prices)) {
+      console.error("Invalid market chart data format", data);
+      return null;
+    }
+
+    return data as CoinGeckoMarketChart;
   } catch (error) {
     console.error("Error fetching market chart data:", error);
     return null;
