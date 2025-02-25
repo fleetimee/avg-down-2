@@ -9,7 +9,7 @@ import { BucketStatsOverview } from "@/features/buckets/components/BucketStatsOv
 import { BucketMarketData } from "@/features/buckets/components/BucketMarketData";
 import { CoinDescription } from "@/features/buckets/components/CoinDescription";
 import { getCoinMarketChart } from "@/features/buckets/services/coingecko.service";
-import { MarketChart } from "@/components/chart/market-chart";
+import { MarketChartCard } from "@/components/chart/market-chart-card";
 
 interface PageProps {
   params: Promise<{
@@ -104,7 +104,8 @@ export default async function BucketDetailsPage(props: PageProps) {
         </div>
       )}
 
-      <MarketChart
+      <MarketChartCard
+        title="Price Chart (7 days)"
         data={getCoin}
         dataType="prices" // or "market_caps" or "total_volumes"
         height={200}
