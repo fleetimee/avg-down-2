@@ -6,3 +6,4 @@ export { TransactionBreadcrumb } from "./TransactionBreadcrumb";
 export { TransactionDetails } from "./TransactionDetails";
 export { TransactionPerformance } from "./TransactionPerformance";
 export { FilterDrawer } from "./FilterDrawer";
+export { FilterBadges } from "./FilterBadges";

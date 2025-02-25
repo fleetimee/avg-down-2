@@ -7,6 +7,7 @@ import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTr
 import { History, Home as HomeIcon, AlertCircle, Search } from "lucide-react";
 import { CoinFilterCombobox } from "@/features/transactions/components/CoinFilterCombobox";
 import { FilterDrawer } from "@/features/transactions/components/FilterDrawer";
+import { FilterBadges } from "@/features/transactions/components/FilterBadges";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -155,12 +156,15 @@ export default async function TransactionPage(props: TransactionPageProps) {
         </AlertDescription>
       </Alert>
 
-      <div className="flex items-center gap-2">
-        <Search className="w-5 h-5 text-muted-foreground" />
-        <div className="flex-1">
-          <CoinFilterCombobox coins={availableCoins} />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <Search className="w-5 h-5 text-muted-foreground" />
+          <div className="flex-1">
+            <CoinFilterCombobox coins={availableCoins} />
+          </div>
+          <FilterDrawer />
         </div>
-        <FilterDrawer />
+        <FilterBadges coinDetails={coinDetailsMap} />
       </div>
 
       {enrichedTransactions.length > 0 ? (
