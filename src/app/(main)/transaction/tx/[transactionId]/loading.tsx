@@ -1,4 +1,4 @@
-import { ArrowLeft, History, Home } from "lucide-react";
+import { ArrowLeft, History, Home, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -79,6 +79,32 @@ export default function TransactionDetailLoading() {
             <div className="flex justify-between py-2">
               <Skeleton className="h-5 w-24" />
               <Skeleton className="h-6 w-36" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Performance Card Loading State */}
+      <Card variant="white">
+        <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-muted-foreground" />
+            <h2 className="text-lg font-semibold">Performance Since Buy</h2>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <div className="grid gap-4">
+            <div className="flex justify-between py-2 border-b">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <div className="flex justify-between py-2">
+              <Skeleton className="h-5 w-28" />
+              <Skeleton className="h-6 w-36 bg-muted" />
             </div>
           </div>
         </CardContent>
