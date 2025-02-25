@@ -30,6 +30,7 @@ export function FilterBadges({ coinDetails, className }: FilterBadgesProps) {
   const showSaleOnly = searchParams.get("sale") === "true";
   const currentCoin = searchParams.get("coin");
   const currentLimit = searchParams.get("limit");
+  const currentPage = parseInt(searchParams.get("page") || "1");
 
   const removeFilter = (key: string) => {
     const params = new URLSearchParams(searchParams);
@@ -37,10 +38,19 @@ export function FilterBadges({ coinDetails, className }: FilterBadgesProps) {
     if (key === "limit") {
       params.set("limit", "10"); // Reset to default limit
     }
+    if (key === "page") {
+      params.set("page", "1"); // Reset to first page
+    }
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  if (!currentSort && !showSaleOnly && !currentCoin && !currentLimit) {
+  if (
+    !currentSort &&
+    !showSaleOnly &&
+    !currentCoin &&
+    !currentLimit &&
+    currentPage === 1
+  ) {
     return null;
   }
 
@@ -84,6 +94,16 @@ export function FilterBadges({ coinDetails, className }: FilterBadgesProps) {
           onClick={() => removeFilter("limit")}
         >
           {currentLimit} items per page
+          <X className="ml-1 h-3 w-3" />
+        </Badge>
+      )}
+      {currentPage > 1 && (
+        <Badge
+          variant="neutral"
+          className="cursor-pointer hover:opacity-80"
+          onClick={() => removeFilter("page")}
+        >
+          Page {currentPage}
           <X className="ml-1 h-3 w-3" />
         </Badge>
       )}
