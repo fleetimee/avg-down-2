@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 
 const sortOptions = [
   { value: "date_desc", label: "Date (Newest First)" },
@@ -33,33 +34,59 @@ const sortOptions = [
   { value: "price_asc", label: "Price (Lowest First)" },
 ] as const;
 
+const limitOptions = [
+  { value: "10", label: "10 per page" },
+  { value: "20", label: "20 per page" },
+  { value: "50", label: "50 per page" },
+  { value: "100", label: "100 per page" },
+] as const;
+
 export function FilterDrawer() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState(false);
+  const [jumpToPage, setJumpToPage] = React.useState("");
 
   // Get current filter values from URL
   const currentSort = searchParams.get("sort") || "date_desc";
   const showSaleOnly = searchParams.get("sale") === "true";
+  const currentLimit = searchParams.get("limit") || "10";
 
   const handleFilterChange = (
-    key: "sort" | "sale",
+    key: "sort" | "sale" | "limit" | "page",
     value: string | boolean
   ) => {
     const params = new URLSearchParams(searchParams);
     if (value) {
       params.set(key, value.toString());
+      // Reset to page 1 when changing filters except for direct page changes
+      if (key !== "page") {
+        params.set("page", "1");
+      }
     } else {
       params.delete(key);
     }
     router.push(`${pathname}?${params.toString()}`);
   };
 
+  const handleJumpToPage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (jumpToPage) {
+      const pageNum = parseInt(jumpToPage);
+      if (pageNum > 0) {
+        handleFilterChange("page", pageNum.toString());
+        setJumpToPage("");
+      }
+    }
+  };
+
   const handleReset = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("sort");
     params.delete("sale");
+    params.delete("limit");
+    params.delete("page");
     router.push(`${pathname}?${params.toString()}`);
     setOpen(false);
   };
@@ -96,6 +123,42 @@ export function FilterDrawer() {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="limit">Items per page</Label>
+            <Select
+              value={currentLimit}
+              onValueChange={(value) => handleFilterChange("limit", value)}
+            >
+              <SelectTrigger id="limit">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {limitOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="jump-page">Jump to page</Label>
+            <form onSubmit={handleJumpToPage} className="flex gap-2">
+              <Input
+                id="jump-page"
+                type="number"
+                min="1"
+                placeholder="Page number"
+                value={jumpToPage}
+                onChange={(e) => setJumpToPage(e.target.value)}
+              />
+              <Button type="submit" variant="neutral" size="sm">
+                Go
+              </Button>
+            </form>
           </div>
 
           <div className="flex items-center justify-between">

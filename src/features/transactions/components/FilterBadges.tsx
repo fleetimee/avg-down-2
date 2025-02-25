@@ -29,14 +29,18 @@ export function FilterBadges({ coinDetails, className }: FilterBadgesProps) {
   const currentSort = searchParams.get("sort") as TransactionSortOption;
   const showSaleOnly = searchParams.get("sale") === "true";
   const currentCoin = searchParams.get("coin");
+  const currentLimit = searchParams.get("limit");
 
   const removeFilter = (key: string) => {
     const params = new URLSearchParams(searchParams);
     params.delete(key);
+    if (key === "limit") {
+      params.set("limit", "10"); // Reset to default limit
+    }
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  if (!currentSort && !showSaleOnly && !currentCoin) {
+  if (!currentSort && !showSaleOnly && !currentCoin && !currentLimit) {
     return null;
   }
 
@@ -48,7 +52,8 @@ export function FilterBadges({ coinDetails, className }: FilterBadgesProps) {
           className="cursor-pointer hover:opacity-80"
           onClick={() => removeFilter("coin")}
         >
-          {coinDetails?.[currentCoin.toLowerCase()]?.name || currentCoin.toUpperCase()}
+          {coinDetails?.[currentCoin.toLowerCase()]?.name ||
+            currentCoin.toUpperCase()}
           <X className="ml-1 h-3 w-3" />
         </Badge>
       )}
@@ -69,6 +74,16 @@ export function FilterBadges({ coinDetails, className }: FilterBadgesProps) {
           onClick={() => removeFilter("sale")}
         >
           Sales Only
+          <X className="ml-1 h-3 w-3" />
+        </Badge>
+      )}
+      {currentLimit && currentLimit !== "10" && (
+        <Badge
+          variant="neutral"
+          className="cursor-pointer hover:opacity-80"
+          onClick={() => removeFilter("limit")}
+        >
+          {currentLimit} items per page
           <X className="ml-1 h-3 w-3" />
         </Badge>
       )}

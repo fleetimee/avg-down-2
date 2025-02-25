@@ -2,7 +2,10 @@ import { auth } from "../../../../auth";
 import { headers } from "next/headers";
 import { Metadata } from "next";
 import { TransactionList } from "@/features/transactions/components";
-import { getRecentUserTransactions, type TransactionSortOption } from "@/features/transactions/services/transaction.service";
+import {
+  getRecentUserTransactions,
+  type TransactionSortOption,
+} from "@/features/transactions/services/transaction.service";
 import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTransactionCard";
 import { History, Home as HomeIcon, AlertCircle, Search } from "lucide-react";
 import { CoinFilterCombobox } from "@/features/transactions/components/CoinFilterCombobox";
@@ -38,14 +41,13 @@ export const metadata: Metadata = {
   },
 };
 
-const ITEMS_PER_PAGE = 10;
-
 interface TransactionPageProps {
   searchParams: Promise<{
     coin?: string;
     page?: string;
     sort?: string;
     sale?: string;
+    limit?: string;
   }>;
 }
 
@@ -60,17 +62,18 @@ export default async function TransactionPage(props: TransactionPageProps) {
   }
 
   const currentPage = Math.max(1, parseInt(searchParams.page || "1"));
+  const itemsPerPage = parseInt(searchParams.limit || "10");
 
   const [{ transactions, total }, buckets] = await Promise.all([
-    getRecentUserTransactions(session.user.id, currentPage, ITEMS_PER_PAGE, {
+    getRecentUserTransactions(session.user.id, currentPage, itemsPerPage, {
       coinSymbol: searchParams.coin,
-      sortBy: searchParams.sort as TransactionSortOption || "date_desc",
+      sortBy: (searchParams.sort as TransactionSortOption) || "date_desc",
       isSale: searchParams.sale === "true" ? true : undefined,
     }),
     getAllUserBuckets(session.user.id),
   ]);
 
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(total / itemsPerPage);
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
 
   const coinDetailsMap = buckets.reduce((acc, bucket) => {
@@ -173,7 +176,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
             transactions={enrichedTransactions}
             currentPage={currentPage}
             totalItems={total}
-            itemsPerPage={ITEMS_PER_PAGE}
+            itemsPerPage={itemsPerPage}
             showPagination={true}
           />
           {totalPages > 1 && (
