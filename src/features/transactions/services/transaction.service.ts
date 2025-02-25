@@ -197,3 +197,21 @@ export async function markTransactionAsSold(
 
   return result.rows[0];
 }
+
+export async function updateTransaction(
+  transactionId: string,
+  userId: string,
+  quantity: number,
+  price_per_coin: number
+): Promise<boolean> {
+  const result = await db.query(
+    `UPDATE transactions 
+     SET quantity = $1::numeric(18,8), 
+         price_per_coin = $2::numeric(18,8)
+     WHERE id = $3 AND user_id = $4
+     RETURNING id`,
+    [quantity, price_per_coin, transactionId, userId]
+  );
+
+  return result.rows.length > 0;
+}
