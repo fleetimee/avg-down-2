@@ -23,7 +23,7 @@ export function MarketChart({
   height = 200,
   loading = false,
   dataType = "prices",
-  currency = "USD",
+  currency = "IDR",
 }: MarketChartProps) {
   if (loading) {
     return (
@@ -80,22 +80,25 @@ export function MarketChart({
   // Format the price or value based on the data type
   const formatValue = (value: number): string => {
     if (dataType === "prices") {
-      return new Intl.NumberFormat("en-US", {
+      return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: currency,
-        minimumFractionDigits: value < 1 ? 4 : 2,
-        maximumFractionDigits: value < 1 ? 6 : 2,
+        minimumFractionDigits: value < 1000 ? 4 : 0,
+        maximumFractionDigits: value < 1000 ? 6 : 0,
       }).format(value);
     } else {
       // For market caps and volumes, format with abbreviations
-      if (value >= 1e9) {
-        return `${(value / 1e9).toFixed(2)}B`;
+      const formatter = new Intl.NumberFormat("id-ID");
+      if (value >= 1e12) {
+        return `${formatter.format(value / 1e12)}T`;
+      } else if (value >= 1e9) {
+        return `${formatter.format(value / 1e9)}B`;
       } else if (value >= 1e6) {
-        return `${(value / 1e6).toFixed(2)}M`;
+        return `${formatter.format(value / 1e6)}M`;
       } else if (value >= 1e3) {
-        return `${(value / 1e3).toFixed(2)}K`;
+        return `${formatter.format(value / 1e3)}K`;
       }
-      return value.toFixed(2);
+      return formatter.format(value);
     }
   };
 

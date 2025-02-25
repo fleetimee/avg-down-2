@@ -48,9 +48,9 @@ export async function getCoinMarketChart(
     return null;
   }
 
-  // Default options
+  // Default options with IDR as default currency
   const defaultOptions: MarketChartOptions = {
-    vs_currency: "usd",
+    vs_currency: "idr",
     days: 7,
     interval: "daily",
   };

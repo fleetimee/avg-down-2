@@ -76,8 +76,6 @@ export default async function BucketDetailsPage(props: PageProps) {
     interval: "daily",
   });
 
-  console.log("getCoin", getCoin);
-
   return (
     <div className="flex flex-col gap-6 p-4">
       <BucketDetailsBreadcrumb coinSymbol={bucket.coin_symbol} />
@@ -109,7 +107,7 @@ export default async function BucketDetailsPage(props: PageProps) {
         data={getCoin}
         dataType="prices" // or "market_caps" or "total_volumes"
         height={200}
-        currency="USD"
+        currency="IDR"
       />
 
       {coinDetails.description?.en && (
