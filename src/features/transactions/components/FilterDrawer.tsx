@@ -48,12 +48,18 @@ export function FilterDrawer() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState(false);
-  const [jumpToPage, setJumpToPage] = React.useState("");
 
   // Get current filter values from URL
   const currentSort = searchParams.get("sort") || "date_desc";
   const showSaleOnly = searchParams.get("sale") === "true";
   const currentLimit = searchParams.get("limit") || "10";
+  const currentPage = searchParams.get("page") || "1";
+  const [jumpToPage, setJumpToPage] = React.useState(currentPage);
+
+  // Update jumpToPage when URL changes
+  React.useEffect(() => {
+    setJumpToPage(currentPage);
+  }, [currentPage]);
 
   const handleFilterChange = (
     key: "sort" | "sale" | "limit" | "page",
@@ -85,7 +91,6 @@ export function FilterDrawer() {
       const pageNum = parseInt(jumpToPage);
       if (pageNum > 0) {
         handleFilterChange("page", pageNum.toString());
-        setJumpToPage("");
       }
     }
   };
@@ -97,6 +102,7 @@ export function FilterDrawer() {
     params.delete("limit");
     params.delete("page");
     router.push(`${pathname}?${params.toString()}`);
+    setJumpToPage("1"); // Reset to page 1
     setOpen(false);
   };
 
@@ -164,7 +170,12 @@ export function FilterDrawer() {
                 value={jumpToPage}
                 onChange={(e) => setJumpToPage(e.target.value)}
               />
-              <Button type="submit" variant="neutral" size="sm">
+              <Button 
+                type="submit" 
+                variant="neutral" 
+                size="sm"
+                disabled={jumpToPage === currentPage}
+              >
                 Go
               </Button>
             </form>
