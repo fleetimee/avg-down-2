@@ -6,7 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BucketDetailsLoading() {
@@ -103,6 +103,22 @@ export default function BucketDetailsLoading() {
           </Card>
         ))}
       </div>
+
+      {/* Market Chart Loading */}
+      <Card className="overflow-hidden max-w-2xl">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">
+            Price Chart (7 days)
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-8 w-32" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        </CardHeader>
+        <CardContent className="px-6 pb-6">
+          <Skeleton className="h-[200px] w-full" />
+        </CardContent>
+      </Card>
 
       {/* Coin Description Loading */}
       <div className="max-w-2xl">
