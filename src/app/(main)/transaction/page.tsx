@@ -62,7 +62,9 @@ export default async function TransactionPage(props: TransactionPageProps) {
   }
 
   const currentPage = Math.max(1, parseInt(searchParams.page || "1"));
-  const itemsPerPage = parseInt(searchParams.limit || "10");
+  // Add validation for items per page limit
+  const rawLimit = parseInt(searchParams.limit || "10");
+  const itemsPerPage = rawLimit > 100 ? 100 : rawLimit;
 
   const [{ transactions, total }, buckets] = await Promise.all([
     getRecentUserTransactions(session.user.id, currentPage, itemsPerPage, {

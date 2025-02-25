@@ -41,6 +41,8 @@ const limitOptions = [
   { value: "100", label: "100 per page" },
 ] as const;
 
+const MAX_ITEMS_PER_PAGE = 100;
+
 export function FilterDrawer() {
   const router = useRouter();
   const pathname = usePathname();
@@ -59,6 +61,13 @@ export function FilterDrawer() {
   ) => {
     const params = new URLSearchParams(searchParams);
     if (value) {
+      // Add validation for limit values
+      if (key === "limit") {
+        const limitValue = parseInt(value.toString());
+        if (limitValue > MAX_ITEMS_PER_PAGE) {
+          value = MAX_ITEMS_PER_PAGE.toString();
+        }
+      }
       params.set(key, value.toString());
       // Reset to page 1 when changing filters except for direct page changes
       if (key !== "page") {
