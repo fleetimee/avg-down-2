@@ -1,4 +1,9 @@
-import { CoinGeckoResponse, CoinSearchResult } from "../types/coingecko.types";
+import {
+  CoinGeckoMarketChart,
+  CoinGeckoResponse,
+  CoinSearchResult,
+  MarketChartOptions,
+} from "../types/coingecko.types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -30,6 +35,67 @@ export async function getCoinDetails(
     return await response.json();
   } catch (error) {
     console.error("Error fetching coin details:", error);
+    return null;
+  }
+}
+
+export async function getCoinMarketChart(
+  coinId: string,
+  options: MarketChartOptions = {}
+): Promise<CoinGeckoMarketChart | null> {
+  if (!coinId || !isValidCoinId(coinId)) {
+    console.error(`Invalid coin ID format: ${coinId}`);
+    return null;
+  }
+
+  // Default options with IDR as default currency
+  const defaultOptions: MarketChartOptions = {
+    vs_currency: "idr",
+    days: 7,
+    interval: "daily",
+  };
+
+  const mergedOptions = { ...defaultOptions, ...options };
+
+  // Build query parameters
+  const params = new URLSearchParams();
+  Object.entries(mergedOptions).forEach(([key, value]) => {
+    if (value !== undefined) {
+      params.append(key, value.toString());
+    }
+  });
+
+  try {
+    // Make the request to our internal API endpoint
+    const response = await fetch(
+      `${BASE_URL}/api/coins/${encodeURIComponent(
+        coinId.toLowerCase()
+      )}/market-chart?${params.toString()}`,
+      {
+        // Use Next.js 15 fetch cache configuration
+        next: { revalidate: 300 }, // Cache for 5 minutes
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        `API error: ${response.status} for coin market chart ${coinId}`
+      );
+      return null;
+    }
+
+    // Parse and validate the response
+    const data = await response.json();
+
+    // Validate the response structure matches what we expect
+    if (!data.prices || !Array.isArray(data.prices)) {
+      console.error("Invalid market chart data format", data);
+      return null;
+    }
+
+    return data as CoinGeckoMarketChart;
+  } catch (error) {
+    console.error("Error fetching market chart data:", error);
     return null;
   }
 }
