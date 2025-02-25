@@ -2,10 +2,11 @@ import { auth } from "../../../../auth";
 import { headers } from "next/headers";
 import { Metadata } from "next";
 import { TransactionList } from "@/features/transactions/components";
-import { getRecentUserTransactions } from "@/features/transactions/services/transaction.service";
+import { getRecentUserTransactions, type TransactionSortOption } from "@/features/transactions/services/transaction.service";
 import { EmptyTransactionCard } from "@/features/transactions/components/EmptyTransactionCard";
 import { History, Home as HomeIcon, AlertCircle, Search } from "lucide-react";
 import { CoinFilterCombobox } from "@/features/transactions/components/CoinFilterCombobox";
+import { FilterDrawer } from "@/features/transactions/components/FilterDrawer";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -39,7 +40,12 @@ export const metadata: Metadata = {
 const ITEMS_PER_PAGE = 10;
 
 interface TransactionPageProps {
-  searchParams: Promise<{ coin?: string; page?: string }>;
+  searchParams: Promise<{
+    coin?: string;
+    page?: string;
+    sort?: string;
+    sale?: string;
+  }>;
 }
 
 export default async function TransactionPage(props: TransactionPageProps) {
@@ -55,17 +61,15 @@ export default async function TransactionPage(props: TransactionPageProps) {
   const currentPage = Math.max(1, parseInt(searchParams.page || "1"));
 
   const [{ transactions, total }, buckets] = await Promise.all([
-    getRecentUserTransactions(
-      session.user.id,
-      currentPage,
-      ITEMS_PER_PAGE,
-      searchParams.coin
-    ),
+    getRecentUserTransactions(session.user.id, currentPage, ITEMS_PER_PAGE, {
+      coinSymbol: searchParams.coin,
+      sortBy: searchParams.sort as TransactionSortOption || "date_desc",
+      isSale: searchParams.sale === "true" ? true : undefined,
+    }),
     getAllUserBuckets(session.user.id),
   ]);
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
-
   const initials = session.user.name?.[0] || session.user.email?.[0] || "?";
 
   const coinDetailsMap = buckets.reduce((acc, bucket) => {
@@ -91,8 +95,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
   }));
 
   function generatePageUrl(pageNum: number) {
-    const params = new URLSearchParams();
-    if (searchParams.coin) params.set("coin", searchParams.coin);
+    const params = new URLSearchParams(searchParams);
     params.set("page", pageNum.toString());
     return `/transaction?${params.toString()}`;
   }
@@ -140,11 +143,15 @@ export default async function TransactionPage(props: TransactionPageProps) {
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
           {searchParams.coin
-            ? `Showing your last 10 transactions for ${
+            ? `Showing your ${
+                searchParams.sale === "true" ? "sale" : ""
+              } transactions for ${
                 coinDetailsMap[searchParams.coin.toLowerCase()]?.name ||
                 searchParams.coin.toUpperCase()
               }`
-            : "View your last 10 transactions across all cryptocurrency buckets"}
+            : `View your ${
+                searchParams.sale === "true" ? "sale" : ""
+              } transactions across all cryptocurrency buckets`}
         </AlertDescription>
       </Alert>
 
@@ -153,6 +160,7 @@ export default async function TransactionPage(props: TransactionPageProps) {
         <div className="flex-1">
           <CoinFilterCombobox coins={availableCoins} />
         </div>
+        <FilterDrawer />
       </div>
 
       {enrichedTransactions.length > 0 ? (
