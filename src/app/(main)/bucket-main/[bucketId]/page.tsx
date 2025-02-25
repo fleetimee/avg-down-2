@@ -8,6 +8,8 @@ import { BucketDetailsHeader } from "@/features/buckets/components/BucketDetails
 import { BucketStatsOverview } from "@/features/buckets/components/BucketStatsOverview";
 import { BucketMarketData } from "@/features/buckets/components/BucketMarketData";
 import { CoinDescription } from "@/features/buckets/components/CoinDescription";
+import { getCoinMarketChart } from "@/features/buckets/services/coingecko.service";
+import { MarketChart } from "@/components/chart/market-chart";
 
 interface PageProps {
   params: Promise<{
@@ -15,7 +17,9 @@ interface PageProps {
   }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { bucketId } = await params;
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -66,6 +70,14 @@ export default async function BucketDetailsPage(props: PageProps) {
   const currentPrice = coinDetails.market_data?.current_price.idr ?? 0;
   const currentValue = (bucket.total_quantity ?? 0) * currentPrice;
 
+  const getCoin = await getCoinMarketChart(bucket.coin_symbol, {
+    vs_currency: "idr",
+    days: "7",
+    interval: "daily",
+  });
+
+  console.log("getCoin", getCoin);
+
   return (
     <div className="flex flex-col gap-6 p-4">
       <BucketDetailsBreadcrumb coinSymbol={bucket.coin_symbol} />
@@ -91,6 +103,13 @@ export default async function BucketDetailsPage(props: PageProps) {
           <BucketMarketData coinDetails={coinDetails} />
         </div>
       )}
+
+      <MarketChart
+        data={getCoin}
+        dataType="prices" // or "market_caps" or "total_volumes"
+        height={200}
+        currency="USD"
+      />
 
       {coinDetails.description?.en && (
         <div className="max-w-2xl">
