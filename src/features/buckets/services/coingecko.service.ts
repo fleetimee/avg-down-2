@@ -1,4 +1,9 @@
-import { CoinGeckoResponse, CoinSearchResult } from "../types/coingecko.types";
+import {
+  CoinGeckoMarketChart,
+  CoinGeckoResponse,
+  CoinSearchResult,
+  MarketChartOptions,
+} from "../types/coingecko.types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -30,6 +35,56 @@ export async function getCoinDetails(
     return await response.json();
   } catch (error) {
     console.error("Error fetching coin details:", error);
+    return null;
+  }
+}
+
+export async function getCoinMarketChart(
+  coinId: string,
+  options: MarketChartOptions = {}
+): Promise<CoinGeckoMarketChart | null> {
+  if (!coinId || !isValidCoinId(coinId)) {
+    console.error(`Invalid coin ID format: ${coinId}`);
+    return null;
+  }
+
+  // Default options
+  const defaultOptions: MarketChartOptions = {
+    vs_currency: "usd",
+    days: 7,
+    interval: "daily",
+  };
+
+  const mergedOptions = { ...defaultOptions, ...options };
+
+  // Build query parameters
+  const params = new URLSearchParams();
+  Object.entries(mergedOptions).forEach(([key, value]) => {
+    if (value !== undefined) {
+      params.append(key, value.toString());
+    }
+  });
+
+  try {
+    const response = await fetch(
+      `${BASE_URL}/api/coins/${encodeURIComponent(
+        coinId.toLowerCase()
+      )}/market_chart?${params.toString()}`,
+      {
+        next: { revalidate: 300 }, // Cache for 5 minutes
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        `API error: ${response.status} for coin market chart ${coinId}`
+      );
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching market chart data:", error);
     return null;
   }
 }

@@ -28,6 +28,19 @@ export interface CoinGeckoResponse {
   last_updated: string;
 }
 
+export interface CoinGeckoMarketChart {
+  prices: [number, number][];
+  market_caps: [number, number][];
+  total_volumes: [number, number][];
+}
+
+export interface MarketChartOptions {
+  vs_currency?: string;
+  days?: string | number;
+  interval?: "daily" | string;
+  precision?: number;
+}
+
 export interface EnrichedBucket {
   bucket: Bucket;
   coinDetails: CoinGeckoResponse | null;
