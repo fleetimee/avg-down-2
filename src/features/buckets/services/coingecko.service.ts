@@ -57,7 +57,6 @@ export async function getCoinMarketChart(
 
   const mergedOptions = { ...defaultOptions, ...options };
 
-  // Build query parameters
   const params = new URLSearchParams();
   Object.entries(mergedOptions).forEach(([key, value]) => {
     if (value !== undefined) {
@@ -69,7 +68,7 @@ export async function getCoinMarketChart(
     const response = await fetch(
       `${BASE_URL}/api/coins/${encodeURIComponent(
         coinId.toLowerCase()
-      )}/market_chart?${params.toString()}`,
+      )}/market-chart?${params.toString()}`,
       {
         next: { revalidate: 300 }, // Cache for 5 minutes
       }
