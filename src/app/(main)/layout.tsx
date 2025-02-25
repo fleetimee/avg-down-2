@@ -8,11 +8,9 @@ export default function MainLayout({
 }) {
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center">
-      <div className="mx-auto w-full max-w-md h-screen relative bg-white border-x border-slate-200 shadow-sm">
-        <ScrollArea className="h-[calc(100vh-4rem)]">{children}</ScrollArea>
-        <div className="flex justify-center">
-          <BottomNav />
-        </div>
+      <div className="mx-auto w-full max-w-md h-screen flex flex-col bg-white border-x border-slate-200 shadow-sm">
+        <ScrollArea className="flex-1">{children}</ScrollArea>
+        <BottomNav />
       </div>
     </div>
   );
